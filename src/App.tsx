@@ -17,14 +17,38 @@ class Point {
 
 class Board {
     private _board: number[] = new Array();
+    private rccSize: number;    // Number of rows, cols and cells in a square
     private boardSize: number;
+    private boardRCC: Array<RCC>;  // Array of all the rows, cells and columns
 
     constructor(rccSize: number, boardItems: number[]) {
+        this.rccSize = rccSize;
         this.boardSize = rccSize * rccSize;
         this._board = new Array<number>();
         this.load(boardItems);
+        this.buildRCC();
     }
 
+    private buildRCC() {
+        this.boardRCC = new Array();
+        console.log('columns');
+        for (let col: number = 1; col <= this.rccSize; col++) {
+            this.boardRCC.push(new RCC(this.board, new Point(col, 1), new Point(col, this.rccSize)));
+        }
+        console.log('rows');
+        for (let row: number = 1; row <= this.rccSize; row++) {
+            this.boardRCC.push(new RCC(this.board, new Point(1, row), new Point(this.rccSize, row)));
+        }
+        console.log('cells');
+        for (let cell: number = 1; cell <= this.rccSize; cell++) {
+            let cellCol: number = (cell - 1) % 3 + 1; // 3 of these
+            let cellRow: number = Math.floor((cell - 1) / 3 + 1); // 3 of these
+            let colStart: number = ((cellCol - 1) * 3) + 1; // 9 of these
+            let rowStart: number = ((cellRow - 1) * 3) + 1; // 9 of these
+            this.boardRCC.push(new RCC(this.board, new Point(colStart, rowStart),
+                new Point(colStart + 2, rowStart + 2)));
+        }
+    }
     public get board(): number[] {
         return this._board;
     }
@@ -44,13 +68,13 @@ class Board {
     }
 
     public printBoardDebug() {
-        let rccSize = Math.sqrt(this.boardSize);
-        let singleSize = Math.sqrt(rccSize);
+        // let rccSize = Math.sqrt(this.boardSize);
+        let singleSize = Math.sqrt(this.rccSize);   // height and width of each cell
         let out: string = '************\n';
-        for (let i = 0; i < rccSize; i++) {
+        for (let i = 0; i < this.rccSize; i++) {
             out += '|';
-            for (let j = 0; j < rccSize; j++) {
-                let index = i * rccSize + j;
+            for (let j = 0; j < this.rccSize; j++) {
+                let index = i * this.rccSize + j;
                 out += this.board[index];
                 if ((j + 1) % singleSize === 0) {
                     out += '|';
@@ -72,12 +96,12 @@ class Board {
  * All board indexes are 1 based.  And converted to 0 based for the Arrays
  */
 class RCC {
-    private board: Board;
+    private board: Array<number>;
     private topLeft: Point;
     private bottomRight: Point;
     // values = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // Regardless of if a row, cell or col, this is an array and not a matrix
 
-    constructor(board: Board, topLeft: Point, bottomRight: Point) {
+    constructor(board: number[], topLeft: Point, bottomRight: Point) {
         this.board = board;
         this.topLeft = topLeft;
         this.bottomRight = bottomRight;
@@ -113,7 +137,6 @@ class RCC {
 
 class Sudoku extends React.Component {
     rccSize: number = 9;  // Size of each row, cell and columns
-    boardRCC: Array<RCC>;  // Array of all the rows, cells and columns
     board: Board;     // Board of the numbers in each place - top-left to bottom-right
 
     constructor(props: {}) {
@@ -131,24 +154,6 @@ class Sudoku extends React.Component {
 
     buildBoard() {
         this.board = new Board(this.rccSize, this.exampleBoard1());
-        this.boardRCC = new Array();
-        console.log('columns');
-        for (let col: number = 1; col <= this.rccSize; col++) {
-            this.boardRCC.push(new RCC(this.board, new Point(col, 1), new Point(col, this.rccSize)));
-        }
-        console.log('rows');
-        for (let row: number = 1; row <= this.rccSize; row++) {
-            this.boardRCC.push(new RCC(this.board, new Point(1, row), new Point(this.rccSize, row)));
-        }
-        console.log('cells');
-        for (let cell: number = 1; cell <= this.rccSize; cell++) {
-            let cellCol: number = (cell - 1) % 3 + 1; // 3 of these
-            let cellRow: number = Math.floor((cell - 1) / 3 + 1); // 3 of these
-            let colStart: number = ((cellCol - 1) * 3) + 1; // 9 of these
-            let rowStart: number = ((cellRow - 1) * 3) + 1; // 9 of these
-            this.boardRCC.push(new RCC(this.board, new Point(colStart, rowStart),
-                new Point(colStart + 2, rowStart + 2)));
-        }
     }
 
     // Numbers on the board - it should be 40% filled
