@@ -6,20 +6,21 @@ import './App.css';
 const logo = require('./logo.svg');
 
 class Point {
-    x: number; y: number;
+    x: number;
+    y: number;
 
-    constructor(x:number, y:number) {
+    constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
     }
-};
+}
 
 class Board {
     private _board: number[] = new Array();
     private boardSize: number;
 
     constructor(rccSize: number, boardItems: number[]) {
-        this.boardSize = rccSize*rccSize;
+        this.boardSize = rccSize * rccSize;
         this._board = new Array<number>();
         this.load(boardItems);
     }
@@ -32,8 +33,8 @@ class Board {
         if (this._board.length <= this.boardSize) {
             this._board.push(item);
         } else {
-            throw new Error('board - attempting to push more than boardSize: ' + this.boardSize + ' onto the board array: '
-                + JSON.stringify(this._board));
+            throw new Error('board - attempting to push more than boardSize: ' + this.boardSize
+                + ' onto the board array: ' + JSON.stringify(this._board));
         }
     }
 
@@ -47,20 +48,20 @@ class Board {
         let singleSize = Math.sqrt(rccSize);
         let out: string = '************\n';
         for (let i = 0; i < rccSize; i++) {
-            out+= '|';
-            for (let j=0; j< rccSize; j++) {
-                let index = i*rccSize + j;
-                out+=this.board[index];
-                if ((j+1) % singleSize === 0) {
+            out += '|';
+            for (let j = 0; j < rccSize; j++) {
+                let index = i * rccSize + j;
+                out += this.board[index];
+                if ((j + 1) % singleSize === 0) {
                     out += '|';
                 }
             }
             out += '\n';
-            if ((i+1) % singleSize === 0) {
+            if ((i + 1) % singleSize === 0) {
                 out += '------------\n';
             }
         }
-        out+='************\n';
+        out += '************\n';
         console.log(out);
     }
 }
@@ -80,7 +81,8 @@ class RCC {
         this.board = board;
         this.topLeft = topLeft;
         this.bottomRight = bottomRight;
-        console.log(`  RCC - topLeft: ${JSON.stringify(this.topLeft)}, bottomRight: ${JSON.stringify(this.bottomRight)}, board at that pos: TODO`);
+        console.log(`  RCC - topLeft: ${JSON.stringify(this.topLeft)},`
+            + `bottomRight: ${JSON.stringify(this.bottomRight)}, board at that pos: TODO`);
     }
 
     /**
@@ -114,7 +116,7 @@ class Sudoku extends React.Component {
     boardRCC: Array<RCC>;  // Array of all the rows, cells and columns
     board: Board;     // Board of the numbers in each place - top-left to bottom-right
 
-    constructor(props: any) {
+    constructor(props: {}) {
         super(props);
         this.assertDimensions();
         this.buildBoard();
@@ -142,10 +144,10 @@ class Sudoku extends React.Component {
         for (let cell: number = 1; cell <= this.rccSize; cell++) {
             let cellCol: number = (cell - 1) % 3 + 1; // 3 of these
             let cellRow: number = Math.floor((cell - 1) / 3 + 1); // 3 of these
-            let colStart: number = ((cellCol - 1) * 3) + 1;// 9 of these
-            let rowStart: number = ((cellRow - 1) * 3) + 1;// 9 of these
-            // console.log('cell: '+cell+' -> cellCol: '+cellCol+', cellRow: '+cellRow+', colStart: '+colStart+', rowStart: ', rowStart);
-            this.boardRCC.push(new RCC(this.board, new Point(colStart, rowStart), new Point(colStart + 2, rowStart + 2)));
+            let colStart: number = ((cellCol - 1) * 3) + 1; // 9 of these
+            let rowStart: number = ((cellRow - 1) * 3) + 1; // 9 of these
+            this.boardRCC.push(new RCC(this.board, new Point(colStart, rowStart),
+                new Point(colStart + 2, rowStart + 2)));
         }
     }
 
@@ -205,7 +207,7 @@ class Sudoku extends React.Component {
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value={val} selected>{val}</option>
-                </select></td>)
+                </select></td>);
             } else {
                 return '';
             }
