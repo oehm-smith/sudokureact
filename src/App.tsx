@@ -15,6 +15,52 @@ class Point {
     }
 }
 
+
+/**
+ * RCC - Row Column Cell - the representation of the Sudoku board.
+ *
+ * All board indexes are 1 based.  And converted to 0 based for the Arrays
+ */
+class RCC {
+    private board: Array<number>;
+    private topLeft: Point;
+    private bottomRight: Point;
+    // values = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // Regardless of if a row, cell or col, this is an array and not a matrix
+
+    constructor(board: number[], topLeft: Point, bottomRight: Point) {
+        this.board = board;
+        this.topLeft = topLeft;
+        this.bottomRight = bottomRight;
+        console.log(`  RCC - topLeft: ${JSON.stringify(this.topLeft)},`
+            + `bottomRight: ${JSON.stringify(this.bottomRight)}, board at that pos: TODO`);
+    }
+
+    /**
+     * Return if the given row, col is part of this RCC.
+     * @param row
+     * @param col
+     */
+    isIn(row: number, col: number): boolean {
+        let isIn: boolean = (row >= this.topLeft[0] && row <= this.bottomRight[0]
+        && col >= this.topLeft[1] && col <= this.bottomRight[1]);
+
+        let tl: string = JSON.stringify(this.topLeft);
+        let tr: string = JSON.stringify(this.bottomRight);
+        console.log(`RCC isIn - row: ${row}, col: ${col}, TL: ${tl}, TR: ${tr}- ${isIn}`);
+        return isIn;
+    }
+
+    /**
+     * Return the unused values in this RCC
+     *
+     * @param row
+     * @param col
+     */
+    availableValues(row: number, col: number): Array<number | null> {
+        return [null];
+    }
+}
+
 class Board {
     private _board: number[] = new Array();
     private rccSize: number;    // Number of rows, cols and cells in a square
@@ -87,51 +133,6 @@ class Board {
         }
         out += '************\n';
         console.log(out);
-    }
-}
-
-/**
- * RCC - Row Column Cell - the representation of the Sudoku board.
- *
- * All board indexes are 1 based.  And converted to 0 based for the Arrays
- */
-class RCC {
-    private board: Array<number>;
-    private topLeft: Point;
-    private bottomRight: Point;
-    // values = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // Regardless of if a row, cell or col, this is an array and not a matrix
-
-    constructor(board: number[], topLeft: Point, bottomRight: Point) {
-        this.board = board;
-        this.topLeft = topLeft;
-        this.bottomRight = bottomRight;
-        console.log(`  RCC - topLeft: ${JSON.stringify(this.topLeft)},`
-            + `bottomRight: ${JSON.stringify(this.bottomRight)}, board at that pos: TODO`);
-    }
-
-    /**
-     * Return if the given row, col is part of this RCC.
-     * @param row
-     * @param col
-     */
-    isIn(row: number, col: number): boolean {
-        let isIn: boolean = (row >= this.topLeft[0] && row <= this.bottomRight[0]
-        && col >= this.topLeft[1] && col <= this.bottomRight[1]);
-
-        let tl: string = JSON.stringify(this.topLeft);
-        let tr: string = JSON.stringify(this.bottomRight);
-        console.log(`RCC isIn - row: ${row}, col: ${col}, TL: ${tl}, TR: ${tr}- ${isIn}`);
-        return isIn;
-    }
-
-    /**
-     * Return the unused values in this RCC
-     *
-     * @param row
-     * @param col
-     */
-    availableValues(row: number, col: number): Array<number | null> {
-        return [null];
     }
 }
 
