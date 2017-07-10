@@ -5,6 +5,21 @@ import './App.css';
 
 const logo = require('./logo.svg');
 
+/**
+ * Sudoku - the game typically on a 9x9 board that is broken down into 9 rows, 9 cols and 9 cells of 9 entries.  And
+ * the possible values are 1..9.
+ *
+ * Invariant:  That no row, col or cell has more than one of any value
+ *
+ * Glossary:
+ * - Column - across (L to R) the board (table) - there are Board.rccSize of them (eg. 9) - numbered left to right
+ * - Row - down (Top to Bottom) the board (table) - there are Board.rccSize of them (eg. 9) - numbered top to bottom
+ * - Cell - squares in the board containing Board.rccSize entries - there are Board.rccSize of them (eg. 9) - numbered
+ * L to R, Top to Bottom
+ * - Entries - the unit squares that can contain a value - there are Board.rccSize of them
+ * Entries are at Points on the Board / table / matrix - [col,row]
+ * - Value - the contents of each Entry ie 1..9
+ */
 export class Point {
     x: number;
     y: number;
@@ -13,8 +28,14 @@ export class Point {
         this.x = x;
         this.y = y;
     }
+
+    public getDebug(): string {
+        return `[${this.x},${this.y}]`;
+    }
 }
 
+export enum RCCType {'row', 'col', 'cell'}
+;
 
 /**
  * RCC - Row Column Cell - the representation of the Sudoku board.
@@ -23,16 +44,24 @@ export class Point {
  */
 export class RCC {
     private board: Array<number>;
-    private topLeft: Point;
-    private bottomRight: Point;
+    private _topLeft: Point;
+    private _bottomRight: Point;
     // values = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // Regardless of if a row, cell or col, this is an array and not a matrix
 
     constructor(board: number[], topLeft: Point, bottomRight: Point) {
         this.board = board;
-        this.topLeft = topLeft;
-        this.bottomRight = bottomRight;
+        this._topLeft = topLeft;
+        this._bottomRight = bottomRight;
         // console.log(`  RCC - topLeft: ${JSON.stringify(this.topLeft)},`
         //     + `bottomRight: ${JSON.stringify(this.bottomRight)}, board at that pos: TODO`);
+    }
+
+    public get topLeft(): Point {
+        return this._topLeft;
+    }
+
+    public get bottomRight(): Point {
+        return this._bottomRight;
     }
 
     /**
@@ -41,11 +70,11 @@ export class RCC {
      * @param col
      */
     isIn(row: number, col: number): boolean {
-        let isIn: boolean = (row >= this.topLeft[0] && row <= this.bottomRight[0]
-        && col >= this.topLeft[1] && col <= this.bottomRight[1]);
+        let isIn: boolean = (row >= this._topLeft[0] && row <= this._bottomRight[0]
+        && col >= this._topLeft[1] && col <= this._bottomRight[1]);
 
-        let tl: string = JSON.stringify(this.topLeft);
-        let br: string = JSON.stringify(this.bottomRight);
+        let tl: string = JSON.stringify(this._topLeft);
+        let br: string = JSON.stringify(this._bottomRight);
         console.log(`RCC isIn - row: ${row}, col: ${col}, TL: ${tl}, BR: ${br}- ${isIn}`);
         return isIn;
     }
@@ -54,13 +83,13 @@ export class RCC {
      * Return the values used in this row.  But never 0, which is a 'blank'
      */
     public usedValues(): number[] {
-        let tl: string = JSON.stringify(this.topLeft);
-        let br: string = JSON.stringify(this.bottomRight);
+        // let tl: string = JSON.stringify(this._topLeft);
+        // let br: string = JSON.stringify(this._bottomRight);
 
         // console.log(`usedValues - topLeft: ${tl}, bottomRight: ${br}`)
         let usedValues: number[] = new Array();
-        for (let row: number = this.topLeft.y - 1; row < this.bottomRight.y; row++) {
-            for (let col: number = this.topLeft.x - 1; col < this.bottomRight.x; col++) {
+        for (let row: number = this._topLeft.y - 1; row < this._bottomRight.y; row++) {
+            for (let col: number = this._topLeft.x - 1; col < this._bottomRight.x; col++) {
                 // TODO - 9!
                 let index = row * 9 + col;
                 // console.log(`  board at: ${index} - ${this.board[index]}`);
@@ -79,8 +108,17 @@ export class RCC {
      * @param row
      * @param col
      */
-    availableValues(row: number, col: number): Array<number | null> {
+    public availableValues(row: number, col: number): Array<number | null> {
         return [null];
+    }
+
+    public getRCCDebug(printBoardAt: boolean = false): string {
+        let out: string = `RCC - [${this._topLeft.x},${this._topLeft.y}] -> [${this._bottomRight.x},`
+        + `${this._bottomRight.y}]`;
+        if (printBoardAt) {
+            out += `board:\n${this.board}`;
+        }
+        return out;
     }
 }
 
@@ -111,16 +149,94 @@ export class Board {
         this.buildRCC();
     }
 
-    public getRow(row: number): RCC {
-        return this.rows[row];
+    public getRow(entry: Point): RCC {
+        return this.rows[entry.y];
     }
 
-    public getCol(col: number): RCC {
-        return this.cols[col];
+    public getCol(entry: Point): RCC {
+        return this.cols[entry.x];
     }
 
-    public getCell(cell: number): RCC {
-        return this.cells[cell];
+    public getCell(entry: Point): RCC {
+        let cellNum: number = this.determineCell(entry);
+        return this.cells[cellNum];
+    }
+
+    /**
+     * Return the possible values that could be inserted at the given entry on the grid to keep the
+     * Sudoku invariant true.
+     *
+     * @param entry
+     */
+    public getPossibleValues(entry: Point): number[] {
+        let rccRow: RCC = this.getRow(entry);
+        let rccCol: RCC = this.getCol(entry);
+        let rccCell: RCC = this.getCell(entry);//
+        console.log(`getPossibleValues @ ${entry.getDebug()}`);
+        console.log(`  getPossibleValues UsedValues - row: [${rccRow.usedValues()}], col: [${rccCol.usedValues()}], `
+        +`cell: [${rccCell.usedValues()}]`);
+        let rccIntersection: number[] = this.getRCCUnion(rccRow, rccCol, rccCell);
+        let rccDifference: number[] = this.getRCCDifference(rccIntersection);
+        console.log(`  getPossibleValues(${entry.getDebug()} - [${rccDifference}]`)
+        return rccDifference;
+    }
+
+    /**
+     * Given an entry position point on the board, return the cell this lies in.
+     *
+     * @param entry
+     */
+    private determineCell(entry: Point): number {
+        let cellsPerRow: number = Math.sqrt(this.rccSize);
+        let cellCol: number = Math.ceil((((entry.x - 1) % this.rccSize) + 1) / cellsPerRow);
+        let cellRow: number = Math.ceil((((entry.y - 1) % this.rccSize) + 1) / cellsPerRow);
+        let cellNum: number = (cellRow - 1) * cellsPerRow + cellCol;
+
+        console.log(`  determineCell(${entry.getDebug()}} -> ${cellCol},${cellRow} = ${cellNum}`);
+
+        return cellNum;
+    }
+
+    /**
+     *
+     * @param row
+     * @param col
+     * @param cell
+     * @returns {[number]} that is the intersection of the values in the entries at the row, col and cell
+     */
+    getRCCIntersection(row: RCC, col: RCC, cell: RCC): number[] {
+        let rowEntries: number[] = row.usedValues();
+        let colEntries: number[] = col.usedValues();
+        let cellEntries: number[] = cell.usedValues();
+
+        let intersection: number[] = _.intersection(rowEntries, colEntries, cellEntries);
+
+        console.log(`  getRCCIntersection row: ${row.getRCCDebug()}, col: ${col.getRCCDebug()}, `
+            + `cell: ${this.determineCell(row.topLeft)} - [${intersection}]`);
+        return intersection;
+    }
+
+    private getRCCUnion(row: RCC, col: RCC, cell: RCC): number[] {
+        let rowEntries: number[] = row.usedValues();
+        let colEntries: number[] = col.usedValues();
+        let cellEntries: number[] = cell.usedValues();
+
+        let union: number[] = _.union(rowEntries, colEntries, cellEntries);
+
+        console.log(`  getRCCUnion row: ${row.getRCCDebug()}, col: ${col.getRCCDebug()}, `
+            + `cell: ${this.determineCell(row.topLeft)} - [${union}]`);
+        return union;
+    }
+
+    /**
+     *
+     * @param allRCCValues
+     * @returns {[number]} the difference between a full set of possible values eg. [1..9] and allRCCValues
+     */
+    private getRCCDifference(allRCCValues: number[]): number[] {
+        // TODO - make this generic
+        let allPossible: number[] = _.range(1,10);
+        return _.difference(allPossible, allRCCValues);
     }
 
     public push(item: number) {
@@ -194,15 +310,15 @@ export class Board {
     }
 
     private setCol(col: number, rcc: RCC) {
-        this.cols[col]=rcc;
+        this.cols[col] = rcc;
     }
 
     private setRow(row: number, rcc: RCC) {
-        this.rows[row]=rcc;
+        this.rows[row] = rcc;
     }
 
     private setCell(cell: number, rcc: RCC) {
-        this.cells[cell]=rcc;
+        this.cells[cell] = rcc;
     }
 
     public get board(): number[] {
@@ -269,9 +385,10 @@ class Sudoku extends React.Component {
         // console.log('board length: ', this.board.length);
         return this.board.board.map((item: number, index: number) => {
             // index+1 since index is 0-based
+            // console.log('borad map - value: ', item);
             if (index + 1 >= indexInRowStart && index + 1 <= indexInRowEnd) {
-                // console.log('  output index: ', index);
                 let val = item > 0 ? item : '';
+                // console.log(`  value: ${item}, val: ${val}, output index: ${index}`);
                 let tdFooter = index > 8 && Math.floor((index) / 9) % 3 === 0 ? 'floor' : '';
                 let tdWall = (index + 1) % 3 === 0 ? 'wall' : '';
 
@@ -288,6 +405,7 @@ class Sudoku extends React.Component {
                     <option value="2">2</option>
                     <option value={val} selected>{val}</option>
                 </select></td>);
+                // selected
             } else {
                 return '';
             }
