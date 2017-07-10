@@ -5,7 +5,7 @@ import './App.css';
 
 const logo = require('./logo.svg');
 
-class Point {
+export class Point {
     x: number;
     y: number;
 
@@ -21,7 +21,7 @@ class Point {
  *
  * All board indexes are 1 based.  And converted to 0 based for the Arrays
  */
-class RCC {
+export class RCC {
     private board: Array<number>;
     private topLeft: Point;
     private bottomRight: Point;
@@ -31,8 +31,8 @@ class RCC {
         this.board = board;
         this.topLeft = topLeft;
         this.bottomRight = bottomRight;
-        console.log(`  RCC - topLeft: ${JSON.stringify(this.topLeft)},`
-            + `bottomRight: ${JSON.stringify(this.bottomRight)}, board at that pos: TODO`);
+        // console.log(`  RCC - topLeft: ${JSON.stringify(this.topLeft)},`
+        //     + `bottomRight: ${JSON.stringify(this.bottomRight)}, board at that pos: TODO`);
     }
 
     /**
@@ -45,9 +45,32 @@ class RCC {
         && col >= this.topLeft[1] && col <= this.bottomRight[1]);
 
         let tl: string = JSON.stringify(this.topLeft);
-        let tr: string = JSON.stringify(this.bottomRight);
-        console.log(`RCC isIn - row: ${row}, col: ${col}, TL: ${tl}, TR: ${tr}- ${isIn}`);
+        let br: string = JSON.stringify(this.bottomRight);
+        console.log(`RCC isIn - row: ${row}, col: ${col}, TL: ${tl}, BR: ${br}- ${isIn}`);
         return isIn;
+    }
+
+    /**
+     * Return the values used in this row.  But never 0, which is a 'blank'
+     */
+    public usedValues(): number[] {
+        let tl: string = JSON.stringify(this.topLeft);
+        let br: string = JSON.stringify(this.bottomRight);
+
+        // console.log(`usedValues - topLeft: ${tl}, bottomRight: ${br}`)
+        let usedValues: number[] = new Array();
+        for (let row: number = this.topLeft.y - 1; row < this.bottomRight.y; row++) {
+            for (let col: number = this.topLeft.x - 1; col < this.bottomRight.x; col++) {
+                // TODO - 9!
+                let index = row * 9 + col;
+                // console.log(`  board at: ${index} - ${this.board[index]}`);
+                if (this.board[index] !== 0) {
+                    usedValues.push(this.board[index]);
+                }
+            }
+        }
+        // console.log(`  ${usedValues}`);
+        return usedValues;
     }
 
     /**
@@ -61,11 +84,24 @@ class RCC {
     }
 }
 
-class Board {
+class Rows {
+    [rows: number]: RCC; // Save the RCCs by row
+}
+class Cols {
+    [cols: number]: RCC; // Save the RCCs by col
+}
+class Cells {
+    [cells: number]: RCC; // Save the RCCs by cell
+}
+
+export class Board {
     private _board: number[] = new Array();
-    private rccSize: number;    // Number of rows, cols and cells in a square
-    private boardSize: number;
-    private boardRCC: Array<RCC>;  // Array of all the rows, cells and columns
+    private rccSize: number;        // Number of rows, cols and cells in a square
+    private boardSize: number;      // Total number of entries on the board ie. rccSize squared
+    private boardRCC: Array<RCC>;   // Array of all the rows, cells and columns
+    private rows: Rows = new Rows();             // Save the RCCs by row
+    private cols: Cols = new Cols();             // Save the RCCs by col
+    private cells: Cells = new Cells();          // Save the RCCs by cell
 
     constructor(rccSize: number, boardItems: number[]) {
         this.rccSize = rccSize;
@@ -75,28 +111,16 @@ class Board {
         this.buildRCC();
     }
 
-    private buildRCC() {
-        this.boardRCC = new Array();
-        console.log('columns');
-        for (let col: number = 1; col <= this.rccSize; col++) {
-            this.boardRCC.push(new RCC(this.board, new Point(col, 1), new Point(col, this.rccSize)));
-        }
-        console.log('rows');
-        for (let row: number = 1; row <= this.rccSize; row++) {
-            this.boardRCC.push(new RCC(this.board, new Point(1, row), new Point(this.rccSize, row)));
-        }
-        console.log('cells');
-        for (let cell: number = 1; cell <= this.rccSize; cell++) {
-            let cellCol: number = (cell - 1) % 3 + 1; // 3 of these
-            let cellRow: number = Math.floor((cell - 1) / 3 + 1); // 3 of these
-            let colStart: number = ((cellCol - 1) * 3) + 1; // 9 of these
-            let rowStart: number = ((cellRow - 1) * 3) + 1; // 9 of these
-            this.boardRCC.push(new RCC(this.board, new Point(colStart, rowStart),
-                new Point(colStart + 2, rowStart + 2)));
-        }
+    public getRow(row: number): RCC {
+        return this.rows[row];
     }
-    public get board(): number[] {
-        return this._board;
+
+    public getCol(col: number): RCC {
+        return this.cols[col];
+    }
+
+    public getCell(cell: number): RCC {
+        return this.cells[cell];
     }
 
     public push(item: number) {
@@ -109,19 +133,19 @@ class Board {
     }
 
     public load(items: number[]) {
-        items.map((item) => this.push(item));
-        console.log(`Board / load - size: ${this.boardSize} - board: ${this.printBoardDebug()}`);
+        items.forEach((item) => this.push(item));
+        console.log(`Board / load - size: ${this.boardSize} - board: ${this.getBoardDebug()}`);
     }
 
-    public printBoardDebug() {
+    public getBoardDebug(): string {
         // let rccSize = Math.sqrt(this.boardSize);
         let singleSize = Math.sqrt(this.rccSize);   // height and width of each cell
-        let out: string = '************\n';
+        let out: string = '\n------------\n';
         for (let i = 0; i < this.rccSize; i++) {
             out += '|';
             for (let j = 0; j < this.rccSize; j++) {
                 let index = i * this.rccSize + j;
-                out += this.board[index];
+                out += this._board[index];
                 if ((j + 1) % singleSize === 0) {
                     out += '|';
                 }
@@ -131,14 +155,64 @@ class Board {
                 out += '------------\n';
             }
         }
-        out += '************\n';
-        console.log(out);
+        // temp get all items
+        // out+='#############\n';
+        // for (let i=0; i < this.boardSize; i++) {
+        //     out+=`index: ${i} -> ${this.board[i]}\n`;
+        // }
+        return out;
+    }
+
+    /* ********** Private Methods ********** */
+
+    private buildRCC() {
+        this.boardRCC = new Array();
+        // console.log('columns');
+        for (let col: number = 1; col <= this.rccSize; col++) {
+            let rcc: RCC = new RCC(this.board, new Point(col, 1), new Point(col, this.rccSize));
+            this.boardRCC.push(rcc);
+            this.setCol(col, rcc);
+        }
+        // console.log('rows');
+        for (let row: number = 1; row <= this.rccSize; row++) {
+            let rcc: RCC = new RCC(this.board, new Point(1, row), new Point(this.rccSize, row));
+            this.boardRCC.push(rcc);
+            this.setRow(row, rcc);
+        }
+        // console.log('cells');
+        for (let cell: number = 1; cell <= this.rccSize; cell++) {
+            let cellCol: number = (cell - 1) % 3 + 1; // 3 of these
+            let cellRow: number = Math.floor((cell - 1) / 3 + 1); // 3 of these
+            let colStart: number = ((cellCol - 1) * 3) + 1; // 9 of these
+            let rowStart: number = ((cellRow - 1) * 3) + 1; // 9 of these
+            let rcc: RCC = new RCC(this.board, new Point(colStart, rowStart),
+                new Point(colStart + 2, rowStart + 2));
+            this.boardRCC.push(rcc);
+            this.setCell(cell, rcc);
+
+        }
+    }
+
+    private setCol(col: number, rcc: RCC) {
+        this.cols[col]=rcc;
+    }
+
+    private setRow(row: number, rcc: RCC) {
+        this.rows[row]=rcc;
+    }
+
+    private setCell(cell: number, rcc: RCC) {
+        this.cells[cell]=rcc;
+    }
+
+    public get board(): number[] {
+        return this._board;
     }
 }
 
 class Sudoku extends React.Component {
-    rccSize: number = 9;  // Size of each row, cell and columns
-    board: Board;     // Board of the numbers in each place - top-left to bottom-right
+    private rccSize: number = 9;  // Size of each row, cell and columns
+    private board: Board;     // Board of the numbers in each place - top-left to bottom-right
 
     constructor(props: {}) {
         super(props);
