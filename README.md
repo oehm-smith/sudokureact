@@ -1,3 +1,9 @@
+This is Sudoku written in react.  Functionally it will let you
+pick numbers in an entry and it will solve the puzzle.  Once complete.
+
+It is based on `create react app` as described below.
+
+----
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
