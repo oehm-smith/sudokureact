@@ -1,4 +1,4 @@
-This is Sudoku written in react.  Functionally it will let you
+This is Sudoku written in reactjs.  Functionally it will let you
 pick numbers in an entry and it will solve the puzzle.  Once complete.
 
 It is based on `create react app` as described below.

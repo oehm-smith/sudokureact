@@ -206,4 +206,28 @@ describe('test App', () => {
             expectEntryPossibleValues([9, 9], [2,6], board);
         });
     });
+
+    describe('test function indexToPoint', () => {
+        let board: Board;
+
+        beforeEach(() => {
+            board = new Board(exampleBoard1Size, exampleBoard1());
+        });
+
+        fit('test some of 81 index values', () => {
+            expect(board.indexToPoint(0)).toEqual(new Point(1,1));
+            expect(board.indexToPoint(8)).toEqual(new Point(9,1));
+            expect(board.indexToPoint(9)).toEqual(new Point(1,2));
+            expect(board.indexToPoint(10)).toEqual(new Point(2,2));
+
+            expect(board.indexToPoint(20)).toEqual(new Point(3,3));
+            expect(board.indexToPoint(25)).toEqual(new Point(8,3));
+            expect(board.indexToPoint(30)).toEqual(new Point(4,4));
+            expect(board.indexToPoint(35)).toEqual(new Point(9,4));
+            expect(board.indexToPoint(36)).toEqual(new Point(1,5));
+
+            expect(board.indexToPoint(79)).toEqual(new Point(8,9));
+            expect(board.indexToPoint(80)).toEqual(new Point(9,9));
+        });
+    });
 });

@@ -114,7 +114,7 @@ export class RCC {
 
     public getRCCDebug(printBoardAt: boolean = false): string {
         let out: string = `RCC - [${this._topLeft.x},${this._topLeft.y}] -> [${this._bottomRight.x},`
-        + `${this._bottomRight.y}]`;
+            + `${this._bottomRight.y}]`;
         if (printBoardAt) {
             out += `board:\n${this.board}`;
         }
@@ -174,11 +174,37 @@ export class Board {
         let rccCell: RCC = this.getCell(entry);//
         console.log(`getPossibleValues @ ${entry.getDebug()}`);
         console.log(`  getPossibleValues UsedValues - row: [${rccRow.usedValues()}], col: [${rccCol.usedValues()}], `
-        +`cell: [${rccCell.usedValues()}]`);
+            + `cell: [${rccCell.usedValues()}]`);
         let rccIntersection: number[] = this.getRCCUnion(rccRow, rccCol, rccCell);
         let rccDifference: number[] = this.getRCCDifference(rccIntersection);
         console.log(`  getPossibleValues(${entry.getDebug()} - [${rccDifference}]`)
         return rccDifference;
+    }
+
+    /**
+     * Given an array (zero-based) index, return an array of the possible values for that
+     *
+     * @param index
+     * @returns {[number]}
+     */
+    public getPossibleValuesByIndex(index: number): number[] {
+        let entry: Point = this.indexToPoint(index);
+        let ret: number[] = this.getPossibleValues(entry);
+        console.log(`getPossibleValuesByIndex(${index}) -> entry: ${entry.getDebug()} -> ${ret}`);
+        return ret;
+    }
+
+    /**
+     * Given a zero-indexed value as used in arrays, return as a 1-th indexed Point (x,y).
+     *
+     * @param index
+     * @returns {Point}
+     */
+    public indexToPoint(index:number): Point {
+        let x: number = (index) % this.rccSize + 1;
+        let y: number = Math.floor(index / this.rccSize)+1;
+
+        return new Point(x,y);
     }
 
     /**
@@ -235,7 +261,7 @@ export class Board {
      */
     private getRCCDifference(allRCCValues: number[]): number[] {
         // TODO - make this generic
-        let allPossible: number[] = _.range(1,10);
+        let allPossible: number[] = _.range(1, 10);
         return _.difference(allPossible, allRCCValues);
     }
 
@@ -328,12 +354,16 @@ export class Board {
 
 class Sudoku extends React.Component {
     private rccSize: number = 9;  // Size of each row, cell and columns
-    private board: Board;     // Board of the numbers in each place - top-left to bottom-right
+    // private board: Board;     // Board of the numbers in each place - top-left to bottom-right
+    // private full: number[] = _.range(1,10);
+    private handleChange: Function = (event: any) => {
+    };
 
     constructor(props: {}) {
         super(props);
         this.assertDimensions();
-        this.buildBoard();
+        this.state = {board: this.buildBoard()};
+        this.handleChange = this.handleValueChange.bind(this);
     }
 
     assertDimensions() {
@@ -343,8 +373,8 @@ class Sudoku extends React.Component {
         }
     }
 
-    buildBoard() {
-        this.board = new Board(this.rccSize, this.exampleBoard1());
+    buildBoard(): Board {
+        return new Board(this.rccSize, this.exampleBoard1());
     }
 
     // Numbers on the board - it should be 40% filled
@@ -378,12 +408,20 @@ class Sudoku extends React.Component {
     /* Render methods */
     /* ********************************************************** */
 
+    handleValueChange(event: any) {
+        console.log('handle change: ', event);
+    }
+
+    makeOption = function (item: number) {
+        return <option>{''+item}</option>;
+    };
+
     getCells(row: number) {
         let indexInRowStart: number = (row - 1) * 9 + 1;
         let indexInRowEnd: number = indexInRowStart + 8;
         // console.log('getCells - indexInRowStart: ' + indexInRowStart + ', indexInRowEnd: ' + indexInRowEnd);
         // console.log('board length: ', this.board.length);
-        return this.board.board.map((item: number, index: number) => {
+        return this.state['board'].board.map((item: number, index: number) => {
             // index+1 since index is 0-based
             // console.log('borad map - value: ', item);
             if (index + 1 >= indexInRowStart && index + 1 <= indexInRowEnd) {
@@ -400,11 +438,14 @@ class Sudoku extends React.Component {
                 if (tdWall.length > 0) {
                     classes += 'cellWall';
                 }
-                return (<td key={index} className={classes}><select>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value={val} selected>{val}</option>
-                </select></td>);
+                // this.state['board'].board[index]
+                // this.state['board'].getPossibleValuesByIndex(index)
+                console.log(`selected: ${this.state['board'].board[index]}`);
+                return (<td key={index} className={classes}>
+                    <select value={this.state['board'].board[index]} onChange={this.handleValueChange}>
+                        <option>{val} </option>
+                        {this.state['board'].getPossibleValuesByIndex(index).map(this.makeOption)}
+                    </select></td>);
                 // selected
             } else {
                 return '';
