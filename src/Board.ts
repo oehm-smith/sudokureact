@@ -1,5 +1,5 @@
-import {RCC} from "./RCC";
-import {Point} from "./Point";
+import { RCC } from './RCC';
+import { Point } from './Point';
 import * as _ from 'lodash';
 
 class Rows {
@@ -92,7 +92,7 @@ export default class Board {
         console.log(`getPossibleValues @ ${entry.getDebug()}`);
         let rccRow: RCC = this.getRow(entry);
         let rccCol: RCC = this.getCol(entry);
-        let rccCell: RCC = this.getCell(entry);//
+        let rccCell: RCC = this.getCell(entry);
         console.log(`  getPossibleValues UsedValues in row: [${rccRow.usedValues()}], col: [${rccCol.usedValues()}], `
             + `cell: [${rccCell.usedValues()}]`);
         let rccUnion: number[] = this.getRCCUnion(rccRow, rccCol, rccCell);
@@ -187,7 +187,6 @@ export default class Board {
         return diff;
     }
 
-
     /* ********** Private Methods ********** */
 
     private buildRCC() {
@@ -207,11 +206,9 @@ export default class Board {
             let cellRow: number = Math.floor((cell - 1) / 3 + 1); // 3 of these
             let colStart: number = ((cellCol - 1) * 3) + 1; // 9 of these
             let rowStart: number = ((cellRow - 1) * 3) + 1; // 9 of these
-            let rcc: RCC = new RCC(this.board, new Point(colStart, rowStart),
-                new Point(colStart + 2, rowStart + 2));
+            let rcc: RCC = new RCC(this.board, new Point(colStart, rowStart), new Point(colStart + 2, rowStart + 2));
             this.boardRCC.push(rcc);
             this.setCell(cell, rcc);
-
         }
     }
 

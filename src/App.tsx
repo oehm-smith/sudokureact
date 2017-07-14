@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import './App.css';
-import Board from "./Board";
-import Selector from "./Selector";
+import Board from './Board';
+import Selector from './Selector';
 
 const logo = require('./logo.svg');
 
@@ -22,8 +22,10 @@ const logo = require('./logo.svg');
  * - Value - the contents of each Entry ie 1..9
  */
 
-
-class Sudoku extends React.Component<any,any> {
+interface SodukuState {
+    board: Board;
+}
+class Sudoku extends React.Component<{}, SodukuState> {
     private rccSize: number = 9;  // Size of each row, cell and columns
 
     constructor(props: {}) {
@@ -82,23 +84,23 @@ class Sudoku extends React.Component<any,any> {
      */
     handleValueChange(value: string, index: number) {
         console.log(`Sudoku handle change - value: ${value}, index: ${index}`);
-        let newBoard: Board = this.state['board'];
+        let newBoard: Board = this.state.board;
         newBoard.board[index] = parseInt(value);
-        this.setState((prevState: any) => ({
+        this.setState((prevState: SodukuState) => ({
             board: newBoard
         }));
     }
 
-    getCells(row: number) {
+    getCells(row: number): {} {
         let indexInRowStart: number = (row - 1) * 9 + 1;
         let indexInRowEnd: number = indexInRowStart + 8;
         // console.log('getCells - indexInRowStart: ' + indexInRowStart + ', indexInRowEnd: ' + indexInRowEnd);
         // console.log('board length: ', this.board.length);
-        return this.state['board'].board.map((item: number, index: number) => {
+        return this.state.board.board.map((item: number, index: number) => {
             // index+1 since index is 0-based
             // console.log('borad map - value: ', item);
             if (index + 1 >= indexInRowStart && index + 1 <= indexInRowEnd) {
-                let val = item > 0 ? item : '';
+                let val: number | '' = item > 0 ? item : '';
                 // console.log(`  value: ${item}, val: ${val}, output index: ${index}`);
                 let tdFooter = index > 8 && Math.floor((index) / 9) % 3 === 0 ? 'floor' : '';
                 let tdWall = (index + 1) % 3 === 0 ? 'wall' : '';
@@ -111,8 +113,8 @@ class Sudoku extends React.Component<any,any> {
                 if (tdWall.length > 0) {
                     classes += 'cellWall';
                 }
-                const possibleValues = this.state['board'].getPossibleValuesByIndex(index);
-                console.log(`selected: ${this.state['board'].board[index]}`);
+                const possibleValues = this.state.board.getPossibleValuesByIndex(index);
+                console.log(`selected: ${this.state.board.board[index]}`);
                 console.log(`  possibleValues: ${possibleValues}`);
                 return (
                     <td key={index} className={classes}>
@@ -129,19 +131,18 @@ class Sudoku extends React.Component<any,any> {
         });
     }
 
-    getRow(row: number): any {
-        const data: any = <tr key={row}>{this.getCells(row)}</tr>;
-        return data;
+    getRow(row: number): JSX.Element {
+        return (<tr key={row}>{this.getCells(row)}</tr>);
     }
 
-    getRows(): any {
+    getRows(): JSX.Element {
         const rows = _.range(1, 10).map((row: number) => {
             return this.getRow(row);
         });
         return <tbody>{rows}</tbody>;
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <div>
                 <form>
@@ -152,18 +153,10 @@ class Sudoku extends React.Component<any,any> {
             </div>
         );
     }
-
-    componentDidMount() {
-    }
-
-    componentWillUnmount() {
-    }
 }
 
-class App extends React.Component
-    <{}
-        , {}> {
-    render() {
+class App extends React.Component<{}, {}> {
+    render(): JSX.Element {
         return (
             <div className="App">
                 <div className="App-header">

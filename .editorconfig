@@ -10,7 +10,9 @@ end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.tsx]
+[*.ts*]
+spaces_around_brackets = inside
+quote_type = single
 
 [*.md]
 insert_final_newline = false

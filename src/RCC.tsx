@@ -1,5 +1,4 @@
-
-import {Point} from './Point';
+import { Point } from './Point';
 
 export enum RCCType {'row', 'col', 'cell'}
 
