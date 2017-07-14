@@ -13,6 +13,7 @@ class Cells {
 }
 
 export default class Board {
+    // The board itself is a 0-based array
     private _board: number[] = [];
     private rccSize: number;        // Number of rows, cols and cells in a square
     private boardSize: number;      // Total number of entries on the board ie. rccSize squared

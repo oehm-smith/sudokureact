@@ -4,6 +4,7 @@ export interface SelectorProps {
     value: number|'';             // Value set in selector
     index: number;          // Index in board for Entry this selector is for
     optionValues: number[]; // All possible values in the selector.  Value must be one of them
+    locked: boolean;        // If true this this entry cannot be changed
     onChange: Function;     // Function to inform the parent of changes
 }
 
@@ -23,12 +24,16 @@ export default class Selector extends React.Component<SelectorProps, {}> {
     };
 
     render(): JSX.Element {
-        return (
-            <select value={this.props.value} onChange={this.handleValueChange}>
-        <option key={this.props.index}>{this.props.value}</option>
-        {this.props.optionValues.map((item: number, optionsIndex: number) =>
-            this.makeOption(item, optionsIndex, this.props.index))}
-        </select>);
+            if (this.props.locked) {
+                return (<label>{this.props.value}</label>);
+            } else {
+                return (
+                    <select value={this.props.value} onChange={this.handleValueChange}>
+                        <option key={this.props.index}>{this.props.value}</option>
+                        {this.props.optionValues.map((item: number, optionsIndex: number) =>
+                            this.makeOption(item, optionsIndex, this.props.index))}
+                    </select>);
+            }
     }
 
     private handleValueChange(event: any) {  // TODO - type of event
