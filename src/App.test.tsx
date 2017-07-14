@@ -1,6 +1,9 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import App, {Board, Point, RCC, RCCType} from './App';
+import App from './App';
+import Board from "./Board";
+import {Point} from "./Point";
+import {RCC, RCCType} from "./RCC";
 
 describe('test App', () => {
     it('renders without crashing', () => {
