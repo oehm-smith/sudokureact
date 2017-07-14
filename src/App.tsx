@@ -4,7 +4,8 @@ import './App.css';
 import Board from './Board';
 import Selector from './Selector';
 
-const logo = require('./logo.svg');
+// logo CC from https://commons.wikimedia.org/wiki/File:Sudoku-by-L2G-20050714.svg
+const logo = require('./Sudoku-by-L2G-20050714.svg');//'./logo.svg');
 
 /**
  * Sudoku - the game typically on a 9x9 board that is broken down into 9 rows, 9 cols and 9 cells of 9 entries.  And
@@ -164,7 +165,7 @@ class App extends React.Component<{}, {}> {
                     <h2>Welcome to Sudoku</h2>
                 </div>
                 <div>
-                    <div><Sudoku/></div>
+                    <div className="board"><Sudoku/></div>
                 </div>
             </div>
         );

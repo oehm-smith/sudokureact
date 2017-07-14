@@ -45,3 +45,9 @@ select {
     -webkit-appearance: none;
     appearance: none;
 }
+
+.board {
+    width: 450px;
+    margin: 0 auto;
+    background-color: gold;
+}
