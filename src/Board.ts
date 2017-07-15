@@ -15,6 +15,7 @@ class Cells {
 export default class Board {
     // The board itself is a 0-based array
     private _board: number[] = [];
+    private _staticEntries: boolean[];  // Which entries can not be changed eg. starting board
     private rccSize: number;        // Number of rows, cols and cells in a square
     private boardSize: number;      // Total number of entries on the board ie. rccSize squared
     private boardRCC: Array<RCC>;   // Array of all the rows, cells and columns
@@ -26,6 +27,8 @@ export default class Board {
         this.rccSize = rccSize;
         this.boardSize = rccSize * rccSize;
         this._board = new Array<number>();
+        this._staticEntries = new Array<boolean>();
+
         this.load(boardItems);
         this.buildRCC();
     }
@@ -48,18 +51,30 @@ export default class Board {
         return this._board;
     }
 
+    public get staticEntries(): boolean[] {
+        return this._staticEntries;
+    }
+
     public push(item: number) {
-        if (this._board.length <= this.boardSize) {
-            this._board.push(item);
-        } else {
-            throw new Error('board - attempting to push more than boardSize: ' + this.boardSize
-                + ' onto the board array: ' + JSON.stringify(this._board));
-        }
+        this._board.push(item);
+    }
+
+    public setStaticEntry(index: number, isStatic: boolean) {
+        this._staticEntries[index] = isStatic;
     }
 
     public load(items: number[]) {
-        items.forEach((item) => this.push(item));
+        items.forEach((item, index) => {
+            if (index > this.boardSize) {
+                throw new Error('load - attempting to add more than boardSize: ' + this.boardSize
+                    + ' onto the static Entries array at index: ' + index);
+            }
+            this.push(item)
+            this.setStaticEntry(index, item > 0);
+        });
+
         console.log(`Board / load - size: ${this.boardSize} - board: ${this.getBoardDebug()}`);
+        console.log(`  StaticEntries: ${this.staticEntries}`);
     }
 
     public getBoardDebug(): string {

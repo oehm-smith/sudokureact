@@ -26,7 +26,6 @@ const logo = require('./Sudoku-by-L2G-20050714.svg');
 
 interface SodukuState {
     board: Board;
-    lockedEntries: boolean[];
 }
 
 interface SodukuProps {
@@ -39,7 +38,7 @@ class Sudoku extends React.Component<SodukuProps, SodukuState> {
     constructor(props: SodukuProps) {
         super(props);
         this.assertDimensions();
-        this.state = {board: this.buildBoard(), lockedEntries: this.buildLockedEntries()};
+        this.state = {board: this.buildBoard()};
         this.handleValueChange = this.handleValueChange.bind(this);
     }
 
@@ -52,14 +51,6 @@ class Sudoku extends React.Component<SodukuProps, SodukuState> {
 
     private buildBoard(): Board {
         return new Board(this.rccSize, this.exampleBoard1());
-    }
-
-    private buildLockedEntries(): boolean[] {
-        let lockedEntries: boolean[] = [];
-        this.exampleBoard1().forEach((item, index) => {
-            lockedEntries[index] = item > 0;
-        });
-        return lockedEntries;
     }
 
     // Numbers on the board - it should be 40% filled
@@ -141,7 +132,7 @@ class Sudoku extends React.Component<SodukuProps, SodukuState> {
                             value={item}
                             index={index}
                             optionValues={possibleValues}
-                            locked={this.state.lockedEntries[index]}
+                            locked={this.state.board.staticEntries[index]}
                             onChange={this.handleValueChange}
                         />
                     </td>);
