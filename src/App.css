@@ -24,16 +24,16 @@
 }
 
 table, th, td {
-    border: 1px solid darkred;
+    border: 1px solid mediumvioletred;
     background-color: #ffea00;
 }
 
 td.cellWall {
-    border-right: 4px solid black;
+    border-right: 3px solid mediumvioletred;
 }
 
 td.cellFooter {
-    border-top: 4px solid black;
+    border-bottom: 3px solid mediumvioletred;
 }
 
 td {

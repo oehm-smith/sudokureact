@@ -114,11 +114,9 @@ class Sudoku extends React.Component<SodukuProps, SodukuState> {
         // console.log('board length: ', this.board.length);
         return this.state.board.board.map((item: number, index: number) => {
             // index+1 since index is 0-based but board coords are 1-based
-            // console.log('borad map - value: ', item);
             if (index + 1 >= indexInRowStart && index + 1 <= indexInRowEnd) {
-                let val: number | '' = item > 0 ? item : '';
                 // console.log(`  value: ${item}, val: ${val}, output index: ${index}`);
-                let tdFooter = index > 8 && Math.floor((index) / 9) % 3 === 0 ? 'floor' : '';
+                let tdFooter = index > 8 && Math.ceil((index+1) / 9) % 3 === 0 ? 'floor' : '';
                 let tdWall = (index + 1) % 3 === 0 ? 'wall' : '';
 
                 let classes = '';
@@ -140,7 +138,7 @@ class Sudoku extends React.Component<SodukuProps, SodukuState> {
                 return (
                     <td key={index} className={classes}>
                         <Selector
-                            value={val}
+                            value={item}
                             index={index}
                             optionValues={possibleValues}
                             locked={this.state.lockedEntries[index]}
