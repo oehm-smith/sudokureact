@@ -112,7 +112,7 @@ export default class Board {
     public getPossibleValuesByIndex(index: number): number[] {
         let entry: Point = this.indexToPoint(index);
         let ret: number[] = this.getPossibleValues(entry);
-        console.log(`getPossibleValuesByIndex(${index}) -> entry: ${entry.getDebug()} -> ${ret}`);
+        console.log(`getPossibleValuesByIndex(${index}) -> entry: ${entry.getDebug()} -> [${ret}]`);
         return ret;
     }
 

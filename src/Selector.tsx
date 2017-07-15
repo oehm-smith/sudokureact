@@ -20,7 +20,8 @@ export default class Selector extends React.Component<SelectorProps, {}> {
 
     makeOption = function (item: number, theseOptionsIndex: number, boardIndex: number): JSX.Element {
         let selectorOptionIndex = '' + boardIndex + '-' + theseOptionsIndex;
-        return (<option key={selectorOptionIndex}>{'' + item}</option>);
+        let optItem: string = item > 0 ? ''+item : '';
+        return (<option key={selectorOptionIndex}>{optItem}</option>);
     };
 
     render(): JSX.Element {
@@ -29,7 +30,7 @@ export default class Selector extends React.Component<SelectorProps, {}> {
             } else {
                 return (
                     <select value={this.props.value} onChange={this.handleValueChange}>
-                        <option key={this.props.index}>{this.props.value}</option>
+                        <option key={this.props.index}>{this.props.value > 0 ? this.props.value : ''}</option>
                         {this.props.optionValues.map((item: number, optionsIndex: number) =>
                             this.makeOption(item, optionsIndex, this.props.index))}
                     </select>);

@@ -101,7 +101,7 @@ class Sudoku extends React.Component<SodukuProps, SodukuState> {
     handleValueChange(value: string, index: number) {
         console.log(`Sudoku handle change - value: ${value}, index: ${index}`);
         let newBoard: Board = this.state.board;
-        newBoard.board[index] = parseInt(value);
+        newBoard.board[index] = parseInt(value === '' ? '0' : value);
         this.setState((prevState: SodukuState) => ({
             board: newBoard
         }));
@@ -113,7 +113,7 @@ class Sudoku extends React.Component<SodukuProps, SodukuState> {
         // console.log('getCells - indexInRowStart: ' + indexInRowStart + ', indexInRowEnd: ' + indexInRowEnd);
         // console.log('board length: ', this.board.length);
         return this.state.board.board.map((item: number, index: number) => {
-            // index+1 since index is 0-based
+            // index+1 since index is 0-based but board coords are 1-based
             // console.log('borad map - value: ', item);
             if (index + 1 >= indexInRowStart && index + 1 <= indexInRowEnd) {
                 let val: number | '' = item > 0 ? item : '';
@@ -131,9 +131,9 @@ class Sudoku extends React.Component<SodukuProps, SodukuState> {
                 }
                 let possibleValues: number[];
                 if (this.props.options.showHints) {
-                    possibleValues = this.state.board.getPossibleValuesByIndex(index);
+                    possibleValues = [0].concat(this.state.board.getPossibleValuesByIndex(index));
                 } else {
-                    possibleValues = _.range(1, 10);
+                    possibleValues = _.range(0, 10);
                 }
                 console.log(`selected: ${this.state.board.board[index]}`);
                 console.log(`  possibleValues: ${possibleValues}`);
