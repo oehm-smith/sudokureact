@@ -8,10 +8,10 @@
 }
 
 .App-header {
-  background-color: #222;
+  background-color: #dddd;
   height: 150px;
   padding: 20px;
-  color: white;
+  color: #555;
 }
 
 .App-intro {
@@ -25,6 +25,7 @@
 
 table, th, td {
     border: 1px solid darkred;
+    background-color: #ffea00;
 }
 
 td.cellWall {
@@ -49,5 +50,14 @@ select {
 .board {
     width: 450px;
     margin: 0 auto;
-    background-color: gold;
+}
+
+.body {
+    background-color: #dddd;
+    height: 450px;
+}
+
+.footer {
+    background-color: #dddd;
+    height: 150px;
 }

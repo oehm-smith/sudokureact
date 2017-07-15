@@ -3,9 +3,10 @@ import * as _ from 'lodash';
 import './App.css';
 import Board from './Board';
 import Selector from './Selector';
+import Footer from "./Footer";
 
 // logo CC from https://commons.wikimedia.org/wiki/File:Sudoku-by-L2G-20050714.svg
-const logo = require('./Sudoku-by-L2G-20050714.svg');//'./logo.svg');
+const logo = require('./Sudoku-by-L2G-20050714.svg');
 
 /**
  * Sudoku - the game typically on a 9x9 board that is broken down into 9 rows, 9 cols and 9 cells of 9 entries.  And
@@ -27,10 +28,15 @@ interface SodukuState {
     board: Board;
     lockedEntries: boolean[];
 }
-class Sudoku extends React.Component<{}, SodukuState> {
+
+interface SodukuProps {
+    options: Options;
+}
+
+class Sudoku extends React.Component<SodukuProps, SodukuState> {
     private rccSize: number = 9;  // Size of each row, cell and columns
 
-    constructor(props: {}) {
+    constructor(props: SodukuProps) {
         super(props);
         this.assertDimensions();
         this.state = {board: this.buildBoard(), lockedEntries: this.buildLockedEntries()};
@@ -123,7 +129,12 @@ class Sudoku extends React.Component<{}, SodukuState> {
                 if (tdWall.length > 0) {
                     classes += 'cellWall';
                 }
-                const possibleValues = this.state.board.getPossibleValuesByIndex(index);
+                let possibleValues: number[];
+                if (this.props.options.showHints) {
+                    possibleValues = this.state.board.getPossibleValuesByIndex(index);
+                } else {
+                    possibleValues = _.range(1, 10);
+                }
                 console.log(`selected: ${this.state.board.board[index]}`);
                 console.log(`  possibleValues: ${possibleValues}`);
                 return (
@@ -166,7 +177,22 @@ class Sudoku extends React.Component<{}, SodukuState> {
     }
 }
 
-class App extends React.Component<{}, {}> {
+export interface Options {
+    showHints: boolean;
+}
+
+interface AppState {
+    options: Options
+}
+
+class App extends React.Component<{}, AppState> {
+    constructor(props: {}) {
+        super(props);
+        let initialOptions: AppState = {options: {showHints: true}};
+        this.state = initialOptions;
+        this.handleOptionsChange = this.handleOptionsChange.bind(this);
+    }
+
     render(): JSX.Element {
         return (
             <div className="App">
@@ -174,11 +200,27 @@ class App extends React.Component<{}, {}> {
                     <img src={logo} className="App-logo" alt="logo"/>
                     <h2>Welcome to Sudoku</h2>
                 </div>
-                <div>
-                    <div className="board"><Sudoku/></div>
+                <div className="body">
+                    <div className="board"><Sudoku options={this.state.options}/></div>
+                </div>
+                <div className="footer">
+                    <Footer
+                        showHints={this.state.options.showHints}
+                        onChange={this.handleOptionsChange}
+                    />
                 </div>
             </div>
         );
+    }
+
+    private handleOptionsChange(target: any) {
+        const name = target.name;
+        const value = name == 'showHints' ? target.checked : target.value;
+        let options: AppState = {options: {showHints: value}};
+
+        console.log(`App handleOptionsChange (value: ${value}: `, options);
+
+        this.setState(options);
     }
 }
 
