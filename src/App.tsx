@@ -1,8 +1,9 @@
 import * as React from 'react';
 import './App.css';
 import Footer from './Footer';
-import Sudoku from './Sudoku'
-import {SudokuOptions} from './Sudoku';
+import Sudoku from './Sudoku';
+import { SudokuOptions } from './Sudoku';
+import {ChangeEvent} from "react";
 
 // logo CC from https://commons.wikimedia.org/wiki/File:Sudoku-by-L2G-20050714.svg
 const logo = require('./Sudoku-by-L2G-20050714.svg');
@@ -24,7 +25,7 @@ const logo = require('./Sudoku-by-L2G-20050714.svg');
  */
 
 interface AppState {
-    options: SudokuOptions
+    options: SudokuOptions;
 }
 
 class App extends React.Component<{}, AppState> {
@@ -55,10 +56,11 @@ class App extends React.Component<{}, AppState> {
         );
     }
 
-    private handleOptionsChange(target: any) {
-        const name = target.name;
-        const value = name == 'showHints' ? target.checked : target.value;
-        let appStateOptions: AppState = {options: {showHints: value}};
+    private handleOptionsChange(event: ChangeEvent<HTMLInputElement>) {
+        console.log('event: ', event);
+        const name = event.target.name;
+        const value = name === 'showHints' ? event.target.checked : event.target.value;
+        let appStateOptions: AppState = {options: {showHints: value as boolean}};
 
         this.setState(appStateOptions);
     }

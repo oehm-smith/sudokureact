@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { ChangeEvent } from "react";
 
 export interface OptionsProp {
     showHints: boolean;
@@ -20,7 +21,7 @@ export default class Footer extends React.Component<OptionsProp, {}> {
         </div>);
     }
 
-    private handleValueChange(event: any) {  // TODO - type of event
-        this.props.onChange(event.target);
+    private handleValueChange(event: ChangeEvent<HTMLInputElement>) {
+        this.props.onChange(event);
     }
 }

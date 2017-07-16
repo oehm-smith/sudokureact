@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { ChangeEvent } from "react";
 
 export interface SelectorProps {
     value: number|'';             // Value set in selector
@@ -37,7 +38,7 @@ export default class Selector extends React.Component<SelectorProps, {}> {
             }
     }
 
-    private handleValueChange(event: any) {  // TODO - type of event
+    private handleValueChange(event: ChangeEvent<HTMLSelectElement>) {
         this.props.onChange(event.target.value, this.props.index);
     }
 }
