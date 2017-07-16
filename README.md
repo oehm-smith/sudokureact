@@ -3,7 +3,10 @@ pick numbers in an entry and it will solve the puzzle.  Once complete.
 
 It is based on `create react app` as described below.
 
+There is a running version at [https://projects.tintuna.com/sudokureact](https://projects.tintuna.com/sudokureact).  
+
 ----
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
