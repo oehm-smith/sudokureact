@@ -55,7 +55,7 @@ export default class Board {
         return this._staticEntries;
     }
 
-    public push(item: number) {
+    public pushBoard(item: number) {
         this._board.push(item);
     }
 
@@ -69,33 +69,11 @@ export default class Board {
                 throw new Error('load - attempting to add more than boardSize: ' + this.boardSize
                     + ' onto the static Entries array at index: ' + index);
             }
-            this.push(item)
+            this.pushBoard(item)
             this.setStaticEntry(index, item > 0);
         });
 
         console.log(`Board / load - size: ${this.boardSize} - board: ${this.getBoardDebug()}`);
-        console.log(`  StaticEntries: ${this.staticEntries}`);
-    }
-
-    public getBoardDebug(): string {
-        // let rccSize = Math.sqrt(this.boardSize);
-        let singleSize = Math.sqrt(this.rccSize);   // height and width of each cell
-        let out: string = '\n------------\n';
-        for (let i = 0; i < this.rccSize; i++) {
-            out += '|';
-            for (let j = 0; j < this.rccSize; j++) {
-                let index = i * this.rccSize + j;
-                out += this._board[index];
-                if ((j + 1) % singleSize === 0) {
-                    out += '|';
-                }
-            }
-            out += '\n';
-            if ((i + 1) % singleSize === 0) {
-                out += '------------\n';
-            }
-        }
-        return out;
     }
 
     /**
@@ -144,24 +122,7 @@ export default class Board {
         return new Point(x, y);
     }
 
-    /**
-     *
-     * @param row
-     * @param col
-     * @param cell
-     * @returns {[number]} that is the intersection of the values in the entries at the row, col and cell
-     */
-    public getRCCIntersection(row: RCC, col: RCC, cell: RCC): number[] {
-        let rowEntries: number[] = row.usedValues();
-        let colEntries: number[] = col.usedValues();
-        let cellEntries: number[] = cell.usedValues();
-
-        let intersection: number[] = _.intersection(rowEntries, colEntries, cellEntries);
-
-        console.log(`  getRCCIntersection row: ${row.getRCCDebug()}, col: ${col.getRCCDebug()}, `
-            + `cell: ${this.determineCell(row.topLeft)} - [${intersection}]`);
-        return intersection;
-    }
+    /* ********** Private Methods ********** */
 
     /**
      * Given an entry position point on the board, return the cell this lies in.
@@ -203,8 +164,6 @@ export default class Board {
         return diff;
     }
 
-    /* ********** Private Methods ********** */
-
     private buildRCC() {
         this.boardRCC = new Array();
         for (let col: number = 1; col <= this.rccSize; col++) {
@@ -238,5 +197,26 @@ export default class Board {
 
     private setCell(cell: number, rcc: RCC) {
         this.cells[cell] = rcc;
+    }
+
+    private getBoardDebug(): string {
+        // let rccSize = Math.sqrt(this.boardSize);
+        let singleSize = Math.sqrt(this.rccSize);   // height and width of each cell
+        let out: string = '\n------------\n';
+        for (let i = 0; i < this.rccSize; i++) {
+            out += '|';
+            for (let j = 0; j < this.rccSize; j++) {
+                let index = i * this.rccSize + j;
+                out += this._board[index];
+                if ((j + 1) % singleSize === 0) {
+                    out += '|';
+                }
+            }
+            out += '\n';
+            if ((i + 1) % singleSize === 0) {
+                out += '------------\n';
+            }
+        }
+        return out;
     }
 }

@@ -42,18 +42,27 @@ class Sudoku extends React.Component<SodukuProps, SodukuState> {
         this.handleValueChange = this.handleValueChange.bind(this);
     }
 
-    assertDimensions() {
-        if (this.rccSize % 3 !== 0) {
-            let msg: string = `Board row/height value must be divisible by 3 - it is: ${this.rccSize}`;
+    render(): JSX.Element {
+        return (
+            <div>
+                <form>
+                    <table>
+                        {this.getRows()}
+                    </table>
+                </form>
+            </div>
+        );
+    }
+
+    private assertDimensions() {
+        if (! Number.isInteger(Math.sqrt(this.rccSize))) {
+            let msg: string = `Board row/height value must have a proper integer square root - row/height is: ${this.rccSize}`;
             throw new Error(msg);
         }
     }
 
-    private buildBoard(): Board {
-        return new Board(this.rccSize, this.exampleBoard1());
-    }
-
-    // Numbers on the board - it should be 40% filled
+    /* tslint:disable */
+    // Numbers on the board - it should be 40% filled - currently unused
     randomNumberBoard01(): number[] {
         let board: number[] = new Array<number>(81);
         for (let pos: number = 1; pos <= (9 * 9); pos++) {
@@ -67,8 +76,9 @@ class Sudoku extends React.Component<SodukuProps, SodukuState> {
         }
         return board;
     }
+    /* tslint:enable */
 
-    exampleBoard1(): number[] {
+    private exampleBoard1(): number[] {
         return [0, 0, 0, 1, 0, 5, 0, 6, 8,
             0, 0, 0, 0, 0, 0, 7, 0, 1,
             9, 0, 1, 0, 0, 0, 0, 3, 0,
@@ -81,7 +91,7 @@ class Sudoku extends React.Component<SodukuProps, SodukuState> {
     }
 
     /* ********************************************************** */
-    /* Render methods */
+    /* Render and related methods */
     /* ********************************************************** */
 
     /**
@@ -89,7 +99,7 @@ class Sudoku extends React.Component<SodukuProps, SodukuState> {
      * @param value
      * @param index
      */
-    handleValueChange(value: string, index: number) {
+    private handleValueChange(value: string, index: number) {
         console.log(`Sudoku handle change - value: ${value}, index: ${index}`);
         let newBoard: Board = this.state.board;
         newBoard.board[index] = parseInt(value === '' ? '0' : value);
@@ -98,7 +108,7 @@ class Sudoku extends React.Component<SodukuProps, SodukuState> {
         }));
     }
 
-    getCells(row: number): {} {
+    private getCells(row: number): {} {
         let indexInRowStart: number = (row - 1) * 9 + 1;
         let indexInRowEnd: number = indexInRowStart + 8;
         // console.log('getCells - indexInRowStart: ' + indexInRowStart + ', indexInRowEnd: ' + indexInRowEnd);
@@ -142,27 +152,20 @@ class Sudoku extends React.Component<SodukuProps, SodukuState> {
         });
     }
 
-    getRow(row: number): JSX.Element {
+    private getRow(row: number): JSX.Element {
         return (<tr key={row}>{this.getCells(row)}</tr>);
     }
 
-    getRows(): JSX.Element {
+    private getRows(): JSX.Element {
         const rows = _.range(1, 10).map((row: number) => {
             return this.getRow(row);
         });
         return <tbody>{rows}</tbody>;
     }
 
-    render(): JSX.Element {
-        return (
-            <div>
-                <form>
-                    <table>
-                        {this.getRows()}
-                    </table>
-                </form>
-            </div>
-        );
+    private buildBoard(): Board {
+        // TODO - customise (or multiple selections for) the initial board
+        return new Board(this.rccSize, this.exampleBoard1());
     }
 }
 
@@ -205,11 +208,9 @@ class App extends React.Component<{}, AppState> {
     private handleOptionsChange(target: any) {
         const name = target.name;
         const value = name == 'showHints' ? target.checked : target.value;
-        let options: AppState = {options: {showHints: value}};
+        let appStateOptions: AppState = {options: {showHints: value}};
 
-        console.log(`App handleOptionsChange (value: ${value}: `, options);
-
-        this.setState(options);
+        this.setState(appStateOptions);
     }
 }
 
