@@ -1,7 +1,7 @@
 /**
  * A Point is a reference to a location on the Sudoku board.  It is 1-indexed rather than 0 (zero) for arrays.
  */
-export class Point {
+export default class Point {
     x: number;
     y: number;
 

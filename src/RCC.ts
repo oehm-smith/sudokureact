@@ -1,5 +1,4 @@
-import { Point } from './Point';
-
+import Point from "./Point";
 export enum RCCType {'row', 'col', 'cell'}
 
 /**
@@ -7,7 +6,7 @@ export enum RCCType {'row', 'col', 'cell'}
  *
  * All board indexes are 1 based.  And converted to 0 based for the Arrays
  */
-export class RCC {
+export default class RCC {
     private board: Array<number>;
     private _topLeft: Point;
     private _bottomRight: Point;

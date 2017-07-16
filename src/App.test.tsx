@@ -2,8 +2,8 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import App from './App';
 import Board from "./Board";
-import {Point} from "./Point";
-import {RCC, RCCType} from "./RCC";
+import Point from "./Point";
+import RCC, {RCCType} from "./RCC";
 
 describe('test App', () => {
     it('renders without crashing', () => {
@@ -217,7 +217,7 @@ describe('test App', () => {
             board = new Board(exampleBoard1Size, exampleBoard1());
         });
 
-        fit('test some of 81 index values', () => {
+        it('test some of 81 index values', () => {
             expect(board.indexToPoint(0)).toEqual(new Point(1,1));
             expect(board.indexToPoint(8)).toEqual(new Point(9,1));
             expect(board.indexToPoint(9)).toEqual(new Point(1,2));

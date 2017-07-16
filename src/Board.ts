@@ -1,6 +1,6 @@
-import { RCC } from './RCC';
-import { Point } from './Point';
 import * as _ from 'lodash';
+import Point from "./Point";
+import RCC from "./RCC";
 
 class Rows {
     [rows: number]: RCC; // Save the RCCs by row
