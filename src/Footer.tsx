@@ -18,19 +18,36 @@ export default class Footer extends React.Component<OptionsProp, {}> {
     render(): JSX.Element {
         return (
             <div>
-                <label>Show Hints:
-                    <input
-                        name="showHints"
-                        type="checkbox"
-                        checked={this.props.showHints}
-                        onChange={this.handleValueChange}
-                    />
-                </label>
+                <div>
+                    <label>Show Hints:
+                        <input
+                            name="showHints"
+                            type="checkbox"
+                            checked={this.props.showHints}
+                            onChange={this.handleValueChange}
+                        />
+                    </label>
+                </div>
+                <div>
+                    <Information/>
+                </div>
             </div>
         );
     }
 
     private handleValueChange(event: ChangeEvent<HTMLInputElement>) {
         this.props.onChange(event);
+    }
+}
+
+class Information extends React.Component<{}, {}> {
+    constructor(props: OptionsProp) {
+        super(props);
+    }
+
+    render(): JSX.Element {
+        return (
+            <p>See <a href="https://github.com/oehm-smith/sudokureact">the code on Github</a></p>
+        );
     }
 }
