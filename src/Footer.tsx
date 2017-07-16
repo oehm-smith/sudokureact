@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ChangeEvent } from "react";
+import { ChangeEvent } from 'react';
 
 export interface OptionsProp {
     showHints: boolean;
@@ -16,9 +16,18 @@ export default class Footer extends React.Component<OptionsProp, {}> {
     }
 
     render(): JSX.Element {
-        return (<div>
-            <label>Show Hints:<input name="showHints" type="checkbox" checked={this.props.showHints} onChange={this.handleValueChange}/></label>
-        </div>);
+        return (
+            <div>
+                <label>Show Hints:
+                    <input
+                        name="showHints"
+                        type="checkbox"
+                        checked={this.props.showHints}
+                        onChange={this.handleValueChange}
+                    />
+                </label>
+            </div>
+        );
     }
 
     private handleValueChange(event: ChangeEvent<HTMLInputElement>) {

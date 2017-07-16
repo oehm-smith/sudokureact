@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import './App.css';
-import Selector from "./Selector";
-import Board from "./Board";
+import Selector from './Selector';
+import Board from './Board';
 
 interface SodukuState {
     board: Board;
@@ -32,15 +32,16 @@ export default class Sudoku extends React.Component<SodukuProps, SodukuState> {
                 <form>
                     <table>
                         {this.getRows()}
-        </table>
-        </form>
-        </div>
-    );
+                    </table>
+                </form>
+            </div>
+        );
     }
 
     private assertDimensions() {
         if (! Number.isInteger(Math.sqrt(this.rccSize))) {
-            let msg: string = `Board row/height value must have a proper integer square root - row/height is: ${this.rccSize}`;
+            let msg: string = `Board row/height value must have a proper integer square root - row/height is: `
+                + `${this.rccSize}`;
             throw new Error(msg);
         }
     }
@@ -86,7 +87,7 @@ export default class Sudoku extends React.Component<SodukuProps, SodukuState> {
     private handleValueChange(value: string, index: number) {
         console.log(`Sudoku handle change - value: ${value}, index: ${index}`);
         let newBoard: Board = this.state.board;
-        newBoard.board[index] = parseInt(value === '' ? '0' : value);
+        newBoard.board[index] = parseInt(value === '' ? '0' : value, 10);
         this.setState((prevState: SodukuState) => ({
             board: newBoard
         }));
@@ -101,7 +102,7 @@ export default class Sudoku extends React.Component<SodukuProps, SodukuState> {
             // index+1 since index is 0-based but board coords are 1-based
             if (index + 1 >= indexInRowStart && index + 1 <= indexInRowEnd) {
                 // console.log(`  value: ${item}, val: ${val}, output index: ${index}`);
-                let tdFooter = index > 8 && Math.ceil((index+1) / 9) % 3 === 0 ? 'floor' : '';
+                let tdFooter = index > 8 && Math.ceil((index + 1) / 9) % 3 === 0 ? 'floor' : '';
                 let tdWall = (index + 1) % 3 === 0 ? 'wall' : '';
 
                 let classes = '';
@@ -124,11 +125,11 @@ export default class Sudoku extends React.Component<SodukuProps, SodukuState> {
                     <td key={index} className={classes}>
                 <Selector
                     value={item}
-                index={index}
-                optionValues={possibleValues}
-                locked={this.state.board.staticEntries[index]}
-                onChange={this.handleValueChange}
-            />
+                    index={index}
+                    optionValues={possibleValues}
+                    locked={this.state.board.staticEntries[index]}
+                    onChange={this.handleValueChange}
+                />
                 </td>);
             } else {
                 return '';

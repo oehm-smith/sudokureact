@@ -3,7 +3,7 @@ import './App.css';
 import Footer from './Footer';
 import Sudoku from './Sudoku';
 import { SudokuOptions } from './Sudoku';
-import {ChangeEvent} from "react";
+import { ChangeEvent } from 'react';
 
 // logo CC from https://commons.wikimedia.org/wiki/File:Sudoku-by-L2G-20050714.svg
 const logo = require('./Sudoku-by-L2G-20050714.svg');

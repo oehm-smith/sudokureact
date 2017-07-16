@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
-import Point from "./Point";
-import RCC from "./RCC";
+import Point from './Point';
+import RCC from './RCC';
 
 class Rows {
     [rows: number]: RCC; // Save the RCCs by row
@@ -69,7 +69,7 @@ export default class Board {
                 throw new Error('load - attempting to add more than boardSize: ' + this.boardSize
                     + ' onto the static Entries array at index: ' + index);
             }
-            this.pushBoard(item)
+            this.pushBoard(item);
             this.setStaticEntry(index, item > 0);
         });
 

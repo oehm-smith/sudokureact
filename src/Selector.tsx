@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ChangeEvent } from "react";
+import { ChangeEvent } from 'react';
 
 export interface SelectorProps {
     value: number|'';             // Value set in selector
@@ -21,7 +21,7 @@ export default class Selector extends React.Component<SelectorProps, {}> {
 
     makeOption = function (item: number, theseOptionsIndex: number, boardIndex: number): JSX.Element {
         let selectorOptionIndex = '' + boardIndex + '-' + theseOptionsIndex;
-        let optItem: string = item > 0 ? ''+item : '';
+        let optItem: string = item > 0 ? '' + item : '';
         return (<option key={selectorOptionIndex}>{optItem}</option>);
     };
 
