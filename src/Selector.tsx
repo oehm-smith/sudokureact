@@ -11,14 +11,38 @@ export interface SelectorProps {
     onChange: Function;     // Function to inform the parent of changes
 }
 
+interface SelectorState {
+    optionValues: number[];
+}
 /**
  * Selector is a React impl of an HTML <select with drop-down <options
  */
-export default class Selector extends React.Component<SelectorProps, {}> {
+export default class Selector extends React.Component<SelectorProps, SelectorState> {
     constructor(props: SelectorProps) {
         super(props);
-        // this.state = {selectorValue: props.board[props.index]};
+        this.state = {optionValues: []};
         this.handleValueChange = this.handleValueChange.bind(this);   // TODO - Can I avoid the bind with Typescript?
+    }
+
+    setStateAsync(state: SelectorState) {
+        return new Promise((resolve) => {
+            this.setState(state, resolve);
+        });
+    }
+
+    async componentDidMount() {
+        const possibleValues: number[] = await this.buildPossibleValues();
+        await this.setStateAsync({optionValues: possibleValues})
+    }
+
+    async buildPossibleValues(): Promise<number[]> {
+        return new Promise<number[]>((resolve, reject) => {
+            if (this.props.options.showHints) {
+                resolve([0].concat(this.props.board.getPossibleValuesByIndex(this.props.index)));
+            } else {
+                resolve(_.range(0, 10));
+            }
+        });
     }
 
     makeOption = function (item: number, theseOptionsIndex: number, boardIndex: number): JSX.Element {
@@ -27,20 +51,10 @@ export default class Selector extends React.Component<SelectorProps, {}> {
         return (<option key={selectorOptionIndex}>{optItem}</option>);
     };
 
-    buildPossibleValues(): number[] {
-        let possibleValues: number[] = [];
-        if (this.props.options.showHints) {
-            possibleValues = [0].concat(this.props.board.getPossibleValuesByIndex(this.props.index));
-        } else {
-            possibleValues = _.range(0, 10);
-        }
-        return possibleValues;
-    }
-
     render(): JSX.Element {
         const locked: boolean = this.props.board.staticEntries[this.props.index];
         const value: number = this.props.board.board[this.props.index];
-        const optionValues: number[] = this.buildPossibleValues();
+        const optionValues: number[] = this.state.optionValues;    // buildPossibleValues();
 
         if (locked) {
             return (<label>{value}</label>);
