@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { ChangeEvent } from 'react';
+import * as _ from 'lodash';
+import {ChangeEvent} from 'react';
+import {SudokuOptions} from "./Sudoku";
+import Board from "./Board";
 
 export interface SelectorProps {
-    value: number|'';             // Value set in selector
     index: number;          // Index in board for Entry this selector is for
-    optionValues: number[]; // All possible values in the selector.  Value must be one of them
-    locked: boolean;        // If true this this entry cannot be changed
+    board: Board;
+    options: SudokuOptions;
     onChange: Function;     // Function to inform the parent of changes
 }
 
@@ -25,17 +27,31 @@ export default class Selector extends React.Component<SelectorProps, {}> {
         return (<option key={selectorOptionIndex}>{optItem}</option>);
     };
 
+    buildPossibleValues(): number[] {
+        let possibleValues: number[] = [];
+        if (this.props.options.showHints) {
+            possibleValues = [0].concat(this.props.board.getPossibleValuesByIndex(this.props.index));
+        } else {
+            possibleValues = _.range(0, 10);
+        }
+        return possibleValues;
+    }
+
     render(): JSX.Element {
-            if (this.props.locked) {
-                return (<label>{this.props.value}</label>);
-            } else {
-                return (
-                    <select value={this.props.value} onChange={this.handleValueChange}>
-                        <option key={this.props.index}>{this.props.value > 0 ? this.props.value : ''}</option>
-                        {this.props.optionValues.map((item: number, optionsIndex: number) =>
-                            this.makeOption(item, optionsIndex, this.props.index))}
-                    </select>);
-            }
+        const locked: boolean = this.props.board.staticEntries[this.props.index];
+        const value: number = this.props.board.board[this.props.index];
+        const optionValues: number[] = this.buildPossibleValues();
+
+        if (locked) {
+            return (<label>{value}</label>);
+        } else {
+            return (
+                <select value={value} onChange={this.handleValueChange}>
+                    <option key={this.props.index}>{value > 0 ? value : ''}</option>
+                    {optionValues.map((item: number, optionsIndex: number) =>
+                        this.makeOption(item, optionsIndex, this.props.index))}
+                </select>);
+        }
     }
 
     private handleValueChange(event: ChangeEvent<HTMLSelectElement>) {
