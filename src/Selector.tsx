@@ -31,14 +31,24 @@ export default class Selector extends React.Component<SelectorProps, SelectorSta
     }
 
     async componentDidMount() {
-        const possibleValues: number[] = await this.buildPossibleValues();
-        await this.setStateAsync({optionValues: possibleValues})
+        console.log(`componentDidMount - index: ${this.props.index}, showHints: ${this.props.options.showHints}`);
+        const possibleValues: number[] = await this.buildPossibleValues(undefined);
+        // await this.setStateAsync({optionValues: possibleValues})
+        this.setState({optionValues: possibleValues});
     }
 
-    async buildPossibleValues(): Promise<number[]> {
-        return new Promise<number[]>((resolve, reject) => {
-            if (this.props.options.showHints) {
-                resolve([0].concat(this.props.board.getPossibleValuesByIndex(this.props.index)));
+    async componentWillReceiveProps(newProps: SelectorProps) {
+        // console.log(`componentWillReceiveProps - index: ${this.props.index}, showHints: ${this.props.options.showHints}`);
+        const possibleValues: number[] = await this.buildPossibleValues(newProps);
+        // await this.setStateAsync({optionValues: possibleValues});
+        this.setState({optionValues: possibleValues});
+    }
+
+    async buildPossibleValues(newProps?: SelectorProps): Promise<number[]> {
+        let props:SelectorProps = newProps ? newProps : this.props;
+        return new Promise<number[]>((resolve) => {
+            if (props.options.showHints) {
+                resolve([0].concat(props.board.getPossibleValuesByIndex(props.index)));
             } else {
                 resolve(_.range(0, 10));
             }
@@ -54,7 +64,8 @@ export default class Selector extends React.Component<SelectorProps, SelectorSta
     render(): JSX.Element {
         const locked: boolean = this.props.board.staticEntries[this.props.index];
         const value: number = this.props.board.board[this.props.index];
-        const optionValues: number[] = this.state.optionValues;    // buildPossibleValues();
+        const optionValues: number[] = this.state.optionValues;// this.buildPossibleValues();
+        console.log(`render - index: ${this.props.index}, showHints: ${this.props.options.showHints}`);
 
         if (locked) {
             return (<label>{value}</label>);
