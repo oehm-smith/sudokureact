@@ -56,8 +56,7 @@ class App extends React.Component<{}, AppState> {
         );
     }
 
-    private handleOptionsChange(event: ChangeEvent<HTMLInputElement>) {
-        console.log('event: ', event);
+    handleOptionsChange = async (event: ChangeEvent<HTMLInputElement>) => {
         const name = event.target.name;
         const value = name === 'showHints' ? event.target.checked : event.target.value;
         let appStateOptions: AppState = {options: {showHints: value as boolean}};

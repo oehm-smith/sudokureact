@@ -27,11 +27,14 @@ export default class Sudoku extends React.Component<SodukuProps, SodukuState> {
     }
 
     render(): JSX.Element {
+        console.time('sudoku render time')
+        let rows: JSX.Element = this.getRows()
+        console.timeEnd('sudoku render time');
         return (
             <div>
                 <form>
                     <table>
-                        {this.getRows()}
+                        {rows}
                     </table>
                 </form>
             </div>
@@ -39,7 +42,7 @@ export default class Sudoku extends React.Component<SodukuProps, SodukuState> {
     }
 
     private assertDimensions() {
-        if (! Number.isInteger(Math.sqrt(this.rccSize))) {
+        if (!Number.isInteger(Math.sqrt(this.rccSize))) {
             let msg: string = `Board row/height value must have a proper integer square root - row/height is: `
                 + `${this.rccSize}`;
             throw new Error(msg);
@@ -56,24 +59,6 @@ export default class Sudoku extends React.Component<SodukuProps, SodukuState> {
             0, 3, 0, 0, 0, 0, 8, 0, 5,
             1, 0, 5, 0, 0, 0, 0, 0, 0,
             7, 9, 0, 4, 0, 1, 0, 0, 0];
-    }
-
-    /* ********************************************************** */
-    /* Render and related methods */
-    /* ********************************************************** */
-
-    /**
-     * Change state based on event in a child component
-     * @param value
-     * @param index
-     */
-    private handleValueChange(value: string, index: number) {
-        console.log(`Sudoku handle change - value: ${value}, index: ${index}`);
-        let newBoard: Board = this.state.board;
-        newBoard.board[index] = parseInt(value === '' ? '0' : value, 10);
-        this.setState((prevState: SodukuState) => ({
-            board: newBoard
-        }));
     }
 
     buildClasses = (index: number): string => {
@@ -100,7 +85,7 @@ export default class Sudoku extends React.Component<SodukuProps, SodukuState> {
             // index+1 since index is 0-based but board coords are 1-based
             if (index + 1 >= indexInRowStart && index + 1 <= indexInRowEnd) {
                 let classes = this.buildClasses(index);
-                console.log(`selected: ${this.state.board.board[index]}`);
+                // console.log(`selected: ${this.state.board.board[index]}`);
                 return (
                     <td key={index} className={classes}>
                         <Selector
@@ -114,6 +99,19 @@ export default class Sudoku extends React.Component<SodukuProps, SodukuState> {
                 return '';
             }
         });
+    }
+
+    /**
+     * Change state based on event in a child component
+     * @param value
+     * @param index
+     */
+    handleValueChange = async (value: string, index: number) => {
+        let newBoard: Board = this.state.board;
+        newBoard.board[index] = parseInt(value === '' ? '0' : value, 10);
+        this.setState((prevState: SodukuState) => ({
+            board: newBoard
+        }));
     }
 
     private getRow(row: number): JSX.Element {

@@ -98,8 +98,8 @@ describe('test App', () => {
         // Used https://codepen.io/bbos/pen/yXQmjG?editors=1011 to help write tests
         let board: Board;
 
-        let expectEntryPossibleValues = function (entry: number[], expectedValues: number[], board: Board) {
-            let possibleValues: number[] = board.getPossibleValues(new Point(entry[0], entry[1]));
+        let expectEntryPossibleValues = async function (entry: number[], expectedValues: number[], board: Board) {
+            let possibleValues: number[] = await board.getPossibleValues(new Point(entry[0], entry[1]));
             possibleValues.forEach((value) => {
                 expect(expectedValues).toContain(value);
             });

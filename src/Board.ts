@@ -82,18 +82,20 @@ export default class Board {
      *
      * @param entry
      */
-    public getPossibleValues(entry: Point): number[] {
-        console.log(`getPossibleValues @ ${entry.getDebug()}`);
-        let rccRow: RCC = this.getRow(entry);
-        let rccCol: RCC = this.getCol(entry);
-        let rccCell: RCC = this.getCell(entry);
-        console.log(`  getPossibleValues UsedValues in row: [${rccRow.usedValues()}], col: [${rccCol.usedValues()}], `
-            + `cell: [${rccCell.usedValues()}]`);
-        let rccUnion: number[] = this.getRCCUnion(rccRow, rccCol, rccCell);
+    public async getPossibleValues(entry: Point): Promise<number[]> {
+        // console.log(`getPossibleValues @ ${entry.getDebug()}`);
+        return new Promise<number[]>((resolve) => {
+            let rccRow: RCC = this.getRow(entry);
+            let rccCol: RCC = this.getCol(entry);
+            let rccCell: RCC = this.getCell(entry);
+            // console.log(`  getPossibleValues UsedValues in row: [${rccRow.usedValues()}], col: [${rccCol.usedValues()}], `
+            //     + `cell: [${rccCell.usedValues()}]`);
+            let rccUnion: number[] = this.getRCCUnion(rccRow, rccCol, rccCell);
 
-        let rccDifference: number[] = this.getRCCDifference(rccUnion);
-        console.log(`  getPossibleValues(${entry.getDebug()} - [${rccDifference}]`);
-        return rccDifference;
+            let rccDifference: number[] = this.getRCCDifference(rccUnion);
+            // console.log(`  getPossibleValues(${entry.getDebug()} - [${rccDifference}]`);
+            resolve(rccDifference);
+        });
     }
 
     /**
@@ -102,11 +104,13 @@ export default class Board {
      * @param index
      * @returns {[number]}
      */
-    public getPossibleValuesByIndex(index: number): number[] {
-        let entry: Point = this.indexToPoint(index);
-        let ret: number[] = this.getPossibleValues(entry);
-        console.log(`getPossibleValuesByIndex(${index}) -> entry: ${entry.getDebug()} -> [${ret}]`);
-        return ret;
+    public async getPossibleValuesByIndex(index: number): Promise<number[]> {
+        return new Promise<number[]>(async (resolve) => {
+            let entry: Point = this.indexToPoint(index);
+            let ret: number[] = await this.getPossibleValues(entry);
+            // console.log(`getPossibleValuesByIndex(${index}) -> entry: ${entry.getDebug()} -> [${ret}]`);
+            resolve(ret);
+        });
     }
 
     /**
@@ -135,7 +139,7 @@ export default class Board {
         let cellRow: number = Math.ceil((((entry.y - 1) % this.rccSize) + 1) / cellsPerRow);
         let cellNum: number = (cellRow - 1) * cellsPerRow + cellCol;
 
-        console.log(`  determineCell(${entry.getDebug()}} -> ${cellCol},${cellRow} = ${cellNum}`);
+        // console.log(`  determineCell(${entry.getDebug()}} -> ${cellCol},${cellRow} = ${cellNum}`);
 
         return cellNum;
     }
@@ -147,8 +151,8 @@ export default class Board {
 
         let union: number[] = _.union(rowEntries, colEntries, cellEntries).sort();
 
-        console.log(`  getRCCUnion row: [${rowEntries}], col: [${colEntries}], `
-            + `cell: [${cellEntries}] - [${union}]`);
+        // console.log(`  getRCCUnion row: [${rowEntries}], col: [${colEntries}], `
+        //     + `cell: [${cellEntries}] - [${union}]`);
         return union;
     }
 
