@@ -90,7 +90,7 @@ export default class Sudoku extends React.Component<SodukuProps, SodukuState> {
                     <td key={index} className={classes}>
                         <Selector
                             index={index}
-                            onChange={this.handleValueChange}
+                            onChange={(val: string) => this.handleValueChange(val, index)}
                             board={this.state.board}
                             options={this.props.options}
                         />

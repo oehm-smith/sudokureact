@@ -51,7 +51,7 @@ export default class Selector extends React.Component<SelectorProps, SelectorSta
             return (<label>{value}</label>);
         } else {
             return (
-                <select value={value} onChange={this.handleValueChange}>
+                <select value={value} onChange={(val) => this.handleValueChange(val)}>
                     <option key={this.props.index}>{value > 0 ? value : ''}</option>
                     {optionValues.map((item: number, optionsIndex: number) =>
                         this.makeOption(item, optionsIndex, this.props.index))}
