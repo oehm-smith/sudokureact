@@ -12,7 +12,7 @@ export interface OptionsProp {
 export default class Footer extends React.Component<OptionsProp, {}> {
     constructor(props: OptionsProp) {
         super(props);
-        this.handleValueChange = this.handleValueChange.bind(this);   // TODO - Can I avoid the bind with Typescript?
+        this.handleValueChange = this.handleValueChange.bind(this);
     }
 
     render(): JSX.Element {
@@ -35,7 +35,7 @@ export default class Footer extends React.Component<OptionsProp, {}> {
         );
     }
 
-    private handleValueChange(event: ChangeEvent<HTMLInputElement>) {
+    handleValueChange = async (event: ChangeEvent<HTMLInputElement>) => {
         this.props.onChange(event);
     }
 }
