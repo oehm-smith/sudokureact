@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import {ChangeEvent} from 'react';
-import {SudokuOptions} from "./Sudoku";
-import Board from "./Board";
+import { ChangeEvent } from 'react';
+import { SudokuOptions } from './Sudoku';
+import Board from './Board';
 
 export interface SelectorProps {
     index: number;          // Index in board for Entry this selector is for
@@ -27,7 +27,7 @@ export default class Selector extends React.Component<SelectorProps, SelectorSta
 
     async componentDidMount() {
         const possibleValues: number[] = await this.buildPossibleValues();
-        return await this.setStateAsync({optionValues: possibleValues})
+        return await this.setStateAsync({optionValues: possibleValues});
     }
 
     async componentWillReceiveProps(newProps: SelectorProps) {

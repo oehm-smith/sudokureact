@@ -35,7 +35,7 @@ export default class Footer extends React.Component<OptionsProp, {}> {
         );
     }
 
-    handleValueChange = async (event: ChangeEvent<HTMLInputElement>) => {//comment
+    handleValueChange = async (event: ChangeEvent<HTMLInputElement>) => {
         this.props.onChange(event);
     }
 }

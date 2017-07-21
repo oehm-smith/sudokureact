@@ -27,8 +27,8 @@ export default class Sudoku extends React.Component<SodukuProps, SodukuState> {
     }
 
     render(): JSX.Element {
-        console.time('sudoku render time')
-        let rows: JSX.Element = this.getRows()
+        console.time('sudoku render time');
+        let rows: JSX.Element = this.getRows();
         console.timeEnd('sudoku render time');
         return (
             <div>
@@ -61,7 +61,7 @@ export default class Sudoku extends React.Component<SodukuProps, SodukuState> {
             7, 9, 0, 4, 0, 1, 0, 0, 0];
     }
 
-    buildClasses = (index: number): string => {
+    private buildClasses = (index: number): string => {
         let tdFooter = index > 8 && Math.ceil((index + 1) / 9) % 3 === 0 ? 'floor' : '';
         let tdWall = (index + 1) % 3 === 0 ? 'wall' : '';
         let classes = '';
@@ -106,7 +106,7 @@ export default class Sudoku extends React.Component<SodukuProps, SodukuState> {
      * @param value
      * @param index
      */
-    handleValueChange = async (value: string, index: number) => {
+    private handleValueChange = async (value: string, index: number) => {
         let newBoard: Board = this.state.board;
         newBoard.board[index] = parseInt(value === '' ? '0' : value, 10);
         this.setState((prevState: SodukuState) => ({

@@ -88,7 +88,8 @@ export default class Board {
             let rccRow: RCC = this.getRow(entry);
             let rccCol: RCC = this.getCol(entry);
             let rccCell: RCC = this.getCell(entry);
-            // console.log(`  getPossibleValues UsedValues in row: [${rccRow.usedValues()}], col: [${rccCol.usedValues()}], `
+            // console.log(`getPossibleValues UsedValues in row: [${rccRow.usedValues()}], `
+            //     + `col: [${rccCol.usedValues()}], `
             //     + `cell: [${rccCell.usedValues()}]`);
             let rccUnion: number[] = this.getRCCUnion(rccRow, rccCol, rccCell);
 
