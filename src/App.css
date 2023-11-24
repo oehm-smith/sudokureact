@@ -1,63 +1,55 @@
-.App {
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
   text-align: center;
 }
 
 .App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+    animation: App-logo-spin infinite 20s linear;
+    height: 120px;
+
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
 }
 
-.App-header {
-  background-color: #dddd;
-  height: 150px;
-  padding: 20px;
-  color: #555;
-}
-
-.App-intro {
-  font-size: large;
-}
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
-table, th, td {
-    border: 1px solid mediumvioletred;
-    background-color: #ffea00;
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-td.cellWall {
-    border-right: 3px solid mediumvioletred;
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-td.cellFooter {
-    border-bottom: 3px solid mediumvioletred;
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
 }
 
-td {
-    width: 50px;
-    height: 50px;
+.card {
+  padding: 2em;
 }
 
-select {
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    appearance: none;
-}
-
-.board {
-    width: 450px;
-    margin: 0 auto;
-}
-
-.body {
-    background-color: #dddd;
-    height: 450px;
-}
-
-.footer {
-    background-color: #dddd;
-    height: 150px;
+.read-the-docs {
+  color: #888;
 }

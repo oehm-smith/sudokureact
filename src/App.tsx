@@ -6,7 +6,9 @@ import { SudokuOptions } from './Sudoku';
 import { ChangeEvent } from 'react';
 
 // logo CC from https://commons.wikimedia.org/wiki/File:Sudoku-by-L2G-20050714.svg
-const logo = require('./Sudoku-by-L2G-20050714.svg');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+// const logo = require('./Sudoku-by-L2G-20050714.svg');
+import logo from './Sudoku-by-L2G-20050714.svg'
 
 /**
  * Sudoku - the game typically on a 9x9 board that is broken down into 9 rows, 9 cols and 9 cells of 9 entries.  And
@@ -28,10 +30,10 @@ interface AppState {
     options: SudokuOptions;
 }
 
-class App extends React.Component<{}, AppState> {
-    constructor(props: {}) {
-        super(props);
-        let initialOptions: AppState = {options: {showHints: true}};
+class App extends React.Component<any, AppState> {
+    constructor() {
+        super(null);
+        const initialOptions: AppState = {options: {showHints: true}};
         this.state = initialOptions;
         this.handleOptionsChange = this.handleOptionsChange.bind(this);
     }
@@ -59,7 +61,7 @@ class App extends React.Component<{}, AppState> {
     handleOptionsChange = async (event: ChangeEvent<HTMLInputElement>) => {
         const name = event.target.name;
         const value = name === 'showHints' ? event.target.checked : event.target.value;
-        let appStateOptions: AppState = {options: {showHints: value as boolean}};
+        const appStateOptions: AppState = {options: {showHints: value as boolean}};
 
         this.setState(appStateOptions);
     }
