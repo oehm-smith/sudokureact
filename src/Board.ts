@@ -1,6 +1,6 @@
-import * as _ from 'lodash';
 import Point from './Point';
 import RCC from './RCC';
+import { arrayDifference, arrayRange, arrayUnion3 } from './utils.ts';
 
 class Rows {
     [rows: number]: RCC; // Save the RCCs by row
@@ -18,7 +18,7 @@ export default class Board {
     private _staticEntries: boolean[];  // Which entries can not be changed eg. starting board
     private rccSize: number;        // Number of rows, cols and cells in a square
     private boardSize: number;      // Total number of entries on the board ie. rccSize squared
-    private boardRCC: Array<RCC>;   // Array of all the rows, cells and columns
+    private boardRCC: Array<RCC> = [];   // Array of all the rows, cells and columns
     private rows: Rows = new Rows();             // Save the RCCs by row
     private cols: Cols = new Cols();             // Save the RCCs by col
     private cells: Cells = new Cells();          // Save the RCCs by cell
@@ -38,8 +38,7 @@ export default class Board {
     }
 
     public getCol(entry: Point): RCC {
-        let col: RCC = this.cols[entry.x];
-        return col;
+        return this.cols[entry.x];
     }
 
     public getCell(entry: Point): RCC {
@@ -150,11 +149,11 @@ export default class Board {
         let colEntries: number[] = col.usedValues();
         let cellEntries: number[] = cell.usedValues();
 
-        let union: number[] = _.union(rowEntries, colEntries, cellEntries).sort();
+        // let union: number[] = _.union(rowEntries, colEntries, cellEntries).sort();
 
         // console.log(`  getRCCUnion row: [${rowEntries}], col: [${colEntries}], `
         //     + `cell: [${cellEntries}] - [${union}]`);
-        return union;
+        return arrayUnion3(rowEntries, colEntries, cellEntries).sort();
     }
 
     /**
@@ -164,13 +163,15 @@ export default class Board {
      */
     private getRCCDifference(allRCCValues: number[]): number[] {
         // TODO - make this generic - not 1..9 values range
-        let allPossible: number[] = _.range(1, 10);
-        let diff: number[] = _.difference(allPossible, allRCCValues);
+        // let allPossible: number[] = _.range(1, 10);
+        const allPossible = arrayRange(1, 9);
+        // let diff: number[] = _.difference(allPossible, allRCCValues);
+        const diff = arrayDifference(allPossible, allRCCValues);
         return diff;
     }
 
     private buildRCC() {
-        this.boardRCC = new Array();
+        // this.boardRCC = new Array();
         for (let col: number = 1; col <= this.rccSize; col++) {
             let rcc: RCC = new RCC(this.board, new Point(col, 1), new Point(col, this.rccSize));
             this.boardRCC.push(rcc);

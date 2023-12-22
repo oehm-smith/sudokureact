@@ -1,8 +1,8 @@
 import * as React from 'react';
-import * as _ from 'lodash';
 import { ChangeEvent } from 'react';
 import { SudokuOptions } from './Sudoku';
 import Board from './Board';
+import { arrayRange } from './utils.ts';
 
 export interface SelectorProps {
     index: number;          // Index in board for Entry this selector is for
@@ -72,7 +72,7 @@ export default class Selector extends React.Component<SelectorProps, SelectorSta
                 const values = await props.board.getPossibleValuesByIndex(props.index);
                 resolve([0].concat(values));
             } else {
-                const values = _.range(0, 10);
+                const values = arrayRange(0, 9);
                 resolve(values);
             }
         });

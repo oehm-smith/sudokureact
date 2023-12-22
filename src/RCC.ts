@@ -34,8 +34,8 @@ export default class RCC {
      * @param col
      */
     isIn(row: number, col: number): boolean {
-        let isIn: boolean = (row >= this._topLeft[0] && row <= this._bottomRight[0]
-        && col >= this._topLeft[1] && col <= this._bottomRight[1]);
+        let isIn: boolean = (row >= this._topLeft.y && row <= this._bottomRight.y
+        && col >= this._topLeft.x && col <= this._bottomRight.x);
 
         let tl: string = JSON.stringify(this._topLeft);
         let br: string = JSON.stringify(this._bottomRight);

@@ -1,8 +1,8 @@
 import * as React from 'react';
-import * as _ from 'lodash';
 import './App.css';
 import Selector from './Selector';
 import Board from './Board';
+import { arrayRange } from './utils.ts';
 
 interface SodukuState {
     board: Board;
@@ -81,7 +81,7 @@ export default class Sudoku extends React.Component<SodukuProps, SodukuState> {
         let indexInRowEnd: number = indexInRowStart + 8;
         // console.log('getCells - indexInRowStart: ' + indexInRowStart + ', indexInRowEnd: ' + indexInRowEnd);
         // console.log('board length: ', this.board.length);
-        return this.state.board.board.map((item: number, index: number) => {
+        return this.state.board.board.map((_: number, index: number) => {
             // index+1 since index is 0-based but board coords are 1-based
             if (index + 1 >= indexInRowStart && index + 1 <= indexInRowEnd) {
                 let classes = this.buildClasses(index);
@@ -109,7 +109,7 @@ export default class Sudoku extends React.Component<SodukuProps, SodukuState> {
     private handleValueChange = async (value: string, index: number) => {
         let newBoard: Board = this.state.board;
         newBoard.board[index] = parseInt(value === '' ? '0' : value, 10);
-        this.setState((prevState: SodukuState) => ({
+        this.setState(() => ({
             board: newBoard
         }));
     }
@@ -119,7 +119,7 @@ export default class Sudoku extends React.Component<SodukuProps, SodukuState> {
     }
 
     private getRows(): JSX.Element {
-        const rows = _.range(1, 10).map((row: number) => {
+        const rows = arrayRange(1, 9).map((row: number) => {
             return this.getRow(row);
         });
         return <tbody>{rows}</tbody>;

@@ -1,14 +1,13 @@
 import * as React from 'react';
+import { ChangeEvent } from 'react';
 import './App.css';
 import Footer from './Footer';
-import Sudoku from './Sudoku';
-import { SudokuOptions } from './Sudoku';
-import { ChangeEvent } from 'react';
+import Sudoku, { SudokuOptions } from './Sudoku';
 
 // logo CC from https://commons.wikimedia.org/wiki/File:Sudoku-by-L2G-20050714.svg
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 // const logo = require('./Sudoku-by-L2G-20050714.svg');
-import logo from './Sudoku-by-L2G-20050714.svg'
+import logo from './Sudoku-by-L2G-20050714.svg';
 
 /**
  * Sudoku - the game typically on a 9x9 board that is broken down into 9 rows, 9 cols and 9 cells of 9 entries.  And
@@ -33,8 +32,7 @@ interface AppState {
 class App extends React.Component<any, AppState> {
     constructor() {
         super(null);
-        const initialOptions: AppState = {options: {showHints: true}};
-        this.state = initialOptions;
+        this.state = {options: {showHints: true}};
         this.handleOptionsChange = this.handleOptionsChange.bind(this);
     }
 
