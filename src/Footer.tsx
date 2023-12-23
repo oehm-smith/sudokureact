@@ -9,45 +9,31 @@ export interface OptionsProp {
 /**
  * The Footer hold the options
  */
-export default class Footer extends React.Component<OptionsProp, {}> {
-    constructor(props: OptionsProp) {
-        super(props);
-        this.handleValueChange = this.handleValueChange.bind(this);
-    }
-
-    render(): JSX.Element {
-        return (
+async function Footer(props) {
+    const handleValueChange = async (event: ChangeEvent<HTMLInputElement>) => {
+        props.onChange(event);
+    };
+    return (
+        <div>
             <div>
-                <div>
-                    <label>Show Hints:
-                        <input
-                            name="showHints"
-                            type="checkbox"
-                            checked={this.props.showHints}
-                            onChange={this.handleValueChange}
-                        />
-                    </label>
-                </div>
-                <div>
-                    <Information/>
-                </div>
+                <label>Show Hints:
+                    <input
+                        name="showHints"
+                        type="checkbox"
+                        checked={props.showHints}
+                        onChange={handleValueChange}
+                    />
+                </label>
             </div>
-        );
-    }
-
-    handleValueChange = async (event: ChangeEvent<HTMLInputElement>) => {
-        this.props.onChange(event);
-    }
+            <div>
+                <Information/>
+            </div>
+        </div>
+    );
 }
 
-class Information extends React.Component<{}, {}> {
-    constructor(props: OptionsProp) {
-        super(props);
-    }
-
-    render(): JSX.Element {
-        return (
-            <p>See <a href="https://github.com/oehm-smith/sudokureact">the code on Github</a></p>
-        );
-    }
+function Information() {
+    return (
+        <p>See <a href="https://github.com/oehm-smith/sudokureact">the code on Github</a></p>
+    );
 }

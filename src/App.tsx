@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useState } from 'react';
 import './App.css';
 import Footer from './Footer';
 import Sudoku, { SudokuOptions } from './Sudoku';
@@ -29,40 +28,35 @@ interface AppState {
     options: SudokuOptions;
 }
 
-class App extends React.Component<any, AppState> {
-    constructor() {
-        super(null);
-        this.state = {options: {showHints: true}};
-        this.handleOptionsChange = this.handleOptionsChange.bind(this);
+function App(props: AppState)  {
+    const [state, setState] = useState( {options: {showHints: true}});
+
+    const handleOptionsChange = async (event: ChangeEvent<HTMLInputElement>) => {
+        const name = event.target.name;
+        const value = name === 'showHints' ? event.target.checked : event.target.value;
+        const appStateOptions: AppState = {options: {showHints: value as boolean}};
+
+        setState(appStateOptions);
     }
 
-    render(): JSX.Element {
-        return (
+    return (
             <div className="App">
                 <div className="App-header">
                     <img src={logo} className="App-logo" alt="logo"/>
                     <h2>Welcome to Sudoku</h2>
                 </div>
                 <div className="body">
-                    <div className="board"><Sudoku options={this.state.options}/></div>
+                    <div className="board"><Sudoku options={state.options}/></div>
                 </div>
                 <div className="footer">
                     <Footer
-                        showHints={this.state.options.showHints}
-                        onChange={this.handleOptionsChange}
+                        showHints={state.options.showHints}
+                        onChange={handleOptionsChange}
                     />
                 </div>
             </div>
         );
-    }
 
-    handleOptionsChange = async (event: ChangeEvent<HTMLInputElement>) => {
-        const name = event.target.name;
-        const value = name === 'showHints' ? event.target.checked : event.target.value;
-        const appStateOptions: AppState = {options: {showHints: value as boolean}};
-
-        this.setState(appStateOptions);
-    }
 }
 
 export default App;

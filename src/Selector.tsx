@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { SudokuOptions } from './Sudoku';
 import Board from './Board';
 import { arrayRange } from './utils.ts';
@@ -11,52 +10,56 @@ export interface SelectorProps {
     onChange: Function;     // Function to inform the parent of changes
 }
 
-interface SelectorState {
-    optionValues: number[];
-}
+// interface SelectorState {
+//     optionValues: number[];
+// }
 
 /**
  * Selector is a React impl of an HTML <select with drop-down <options
  */
-export default class Selector extends React.Component<SelectorProps, SelectorState> {
-    constructor(props: SelectorProps) {
-        super(props);
-        this.state = {optionValues: []};
-        this.handleValueChange = this.handleValueChange.bind(this);
-    }
+export default function Selector(props: SelectorProps) {
+    const [state, setState] = useState({optionValues: new Array<number>()});
 
-    async componentDidMount() {
-        const possibleValues: number[] = await this.buildPossibleValues();
-        return await this.setStateAsync({optionValues: possibleValues});
-    }
+    useEffect(() => {
+        const doIt = async () => {
+            const possibleValues: number[] = await buildPossibleValues();
+            setState({optionValues: possibleValues});
+        };
+        doIt();
+    }, []);
 
-    async componentWillReceiveProps(newProps: SelectorProps) {
-        const possibleValues: number[] = await this.buildPossibleValues(newProps);
-        return this.setStateAsync({optionValues: possibleValues});
-    }
+    useEffect(() => {
+        const doIt = async () => {
+            const possibleValues: number[] = await buildPossibleValues(props);
+            setState({optionValues: possibleValues});
+        }
+        doIt();
+    }, [props]);
 
-    makeOption = function (item: number, theseOptionsIndex: number, boardIndex: number): JSX.Element {
+    const makeOption = function (item: number, theseOptionsIndex: number, boardIndex: number): JSX.Element {
         let selectorOptionIndex = '' + boardIndex + '-' + theseOptionsIndex;
         let optItem: string = item > 0 ? '' + item : '';
         return (<option key={selectorOptionIndex}>{optItem}</option>);
     };
 
-    render(): JSX.Element {
-        const locked: boolean = this.props.board.staticEntries[this.props.index];
-        const value: number = this.props.board.board[this.props.index];
-        const optionValues: number[] = this.state.optionValues;
-        // console.log(`render - index: ${this.props.index}, showHints: ${this.props.options.showHints}`);
+    const locked: boolean = props.board.staticEntries[props.index];
+    const value: number = props.board.board[props.index];
+    const optionValues: number[] = state.optionValues;
+    // console.log(`render - index: ${this.props.index}, showHints: ${this.props.options.showHints}`);
 
-        if (locked) {
-            return (<label>{value}</label>);
-        } else {
-            return (
-                <select value={value} onChange={this.handleValueChange}>
-                    <option key={this.props.index}>{value > 0 ? value : ''}</option>
-                    {optionValues.map((item: number, optionsIndex: number) =>
-                        this.makeOption(item, optionsIndex, this.props.index))}
-                </select>);
-        }
+    const handleValueChange = async (event: ChangeEvent<HTMLSelectElement>) => {
+        props.onChange(event.target.value, props.index);
+    };
+
+    if (locked) {
+        return (<label>{value}</label>);
+    } else {
+        return (
+            <select value={value} onChange={handleValueChange}>
+                <option key={props.index}>{value > 0 ? value : ''}</option>
+                {optionValues.map((item: number, optionsIndex: number) =>
+                                      makeOption(item, optionsIndex, props.index))}
+            </select>);
     }
 
     /**
@@ -65,26 +68,22 @@ export default class Selector extends React.Component<SelectorProps, SelectorSta
      * When the 'showHints' button is changed.
      * @returns {Promise<number[]>}
      */
-    private async buildPossibleValues(newProps?: SelectorProps): Promise<number[]> {
-        let props: SelectorProps = newProps ? newProps : this.props;
+    const buildPossibleValues = (newProps?: SelectorProps): Promise<number[]> => {
+        let propsToUse: SelectorProps = newProps ? newProps : props;
         return new Promise<number[]>(async (resolve) => {
-            if (props.options.showHints) {
-                const values = await props.board.getPossibleValuesByIndex(props.index);
+            if (propsToUse.options.showHints) {
+                const values = await propsToUse.board.getPossibleValuesByIndex(propsToUse.index);
                 resolve([0].concat(values));
             } else {
                 const values = arrayRange(0, 9);
                 resolve(values);
             }
         });
-    }
+    };
 
-    private setStateAsync(state: SelectorState) {
-        return new Promise((resolve) => {
-            this.setState(state, resolve);
-        });
-    }
-
-    private async handleValueChange(event: ChangeEvent<HTMLSelectElement>) {
-        this.props.onChange(event.target.value, this.props.index);
-    }
+    // private setStateAsync(state: SelectorState) {
+    //     return new Promise((resolve) => {
+    //         this.setState(state, resolve);
+    //     });
+    // }
 }
