@@ -1,3 +1,6 @@
+// ABOUTME: A 1-indexed (x, y) location on the Sudoku board.
+// ABOUTME: Board translates between these and 0-based array indexes.
+
 /**
  * A Point is a reference to a location on the Sudoku board.  It is 1-indexed rather than 0 (zero) for arrays.
  */

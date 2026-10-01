@@ -1,3 +1,6 @@
+// ABOUTME: Small array helpers used by the board logic.
+// ABOUTME: Replacements for the lodash functions this project previously depended on.
+
 /**
  * Return array of numbers inclusive of start and stop
  * @param start
