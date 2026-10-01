@@ -7,7 +7,7 @@ export interface SelectorProps {
     index: number;          // Index in board for Entry this selector is for
     board: Board;
     options: SudokuOptions;
-    onChange: Function;     // Function to inform the parent of changes
+    onChange: (value: string, index: number) => void;   // Inform the parent of changes
 }
 
 // interface SelectorState {
@@ -26,17 +26,13 @@ export default function Selector(props: SelectorProps) {
      * When the 'showHints' button is changed.
      * @returns {Promise<number[]>}
      */
-    const buildPossibleValues = (newProps?: SelectorProps): Promise<number[]> => {
-        let propsToUse: SelectorProps = newProps ? newProps : props;
-        return new Promise<number[]>(async (resolve) => {
-            if (propsToUse.options.showHints) {
-                const values = await propsToUse.board.getPossibleValuesByIndex(propsToUse.index);
-                resolve([0].concat(values));
-            } else {
-                const values = arrayRange(0, 9);
-                resolve(values);
-            }
-        });
+    const buildPossibleValues = async (newProps?: SelectorProps): Promise<number[]> => {
+        const propsToUse: SelectorProps = newProps ? newProps : props;
+        if (propsToUse.options.showHints) {
+            const values = await propsToUse.board.getPossibleValuesByIndex(propsToUse.index);
+            return [0].concat(values);
+        }
+        return arrayRange(0, 9);
     };
 
     useEffect(() => {
@@ -45,6 +41,9 @@ export default function Selector(props: SelectorProps) {
             setState({optionValues: possibleValues});
         };
         doIt();
+        // The dependencies here are wrong rather than merely incomplete: see the follow-up
+        // that hoists this calculation out of Selector altogether.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -53,11 +52,12 @@ export default function Selector(props: SelectorProps) {
             setState({optionValues: possibleValues});
         }
         doIt();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props]);
 
     const makeOption = function (item: number, theseOptionsIndex: number, boardIndex: number): JSX.Element {
-        let selectorOptionIndex = '' + boardIndex + '-' + theseOptionsIndex;
-        let optItem: string = item > 0 ? '' + item : '';
+        const selectorOptionIndex = '' + boardIndex + '-' + theseOptionsIndex;
+        const optItem: string = item > 0 ? '' + item : '';
         return (<option key={selectorOptionIndex}>{optItem}</option>);
     };
 

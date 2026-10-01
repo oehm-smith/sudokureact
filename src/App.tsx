@@ -4,7 +4,6 @@ import Footer from './Footer';
 import Sudoku, { SudokuOptions } from './Sudoku';
 
 // logo CC from https://commons.wikimedia.org/wiki/File:Sudoku-by-L2G-20050714.svg
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 // const logo = require('./Sudoku-by-L2G-20050714.svg');
 import logo from './Sudoku-by-L2G-20050714.svg';
 

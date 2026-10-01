@@ -42,7 +42,7 @@ export default class Board {
     }
 
     public getCell(entry: Point): RCC {
-        let cellNum: number = this.determineCell(entry);
+        const cellNum: number = this.determineCell(entry);
         return this.cells[cellNum];
     }
 
@@ -82,15 +82,15 @@ export default class Board {
     public async getPossibleValues(entry: Point): Promise<number[]> {
         // console.log(`getPossibleValues @ ${entry.getDebug()}`);
         return new Promise<number[]>((resolve) => {
-            let rccRow: RCC = this.getRow(entry);
-            let rccCol: RCC = this.getCol(entry);
-            let rccCell: RCC = this.getCell(entry);
+            const rccRow: RCC = this.getRow(entry);
+            const rccCol: RCC = this.getCol(entry);
+            const rccCell: RCC = this.getCell(entry);
             // console.log(`getPossibleValues UsedValues in row: [${rccRow.usedValues()}], `
             //     + `col: [${rccCol.usedValues()}], `
             //     + `cell: [${rccCell.usedValues()}]`);
-            let rccUnion: number[] = this.getRCCUnion(rccRow, rccCol, rccCell);
+            const rccUnion: number[] = this.getRCCUnion(rccRow, rccCol, rccCell);
 
-            let rccDifference: number[] = this.getRCCDifference(rccUnion);
+            const rccDifference: number[] = this.getRCCDifference(rccUnion);
             // console.log(`  getPossibleValues(${entry.getDebug()} - [${rccDifference}]`);
             resolve(rccDifference);
         });
@@ -103,12 +103,10 @@ export default class Board {
      * @returns {[number]}
      */
     public async getPossibleValuesByIndex(index: number): Promise<number[]> {
-        return new Promise<number[]>(async (resolve) => {
-            let entry: Point = this.indexToPoint(index);
-            let ret: number[] = await this.getPossibleValues(entry);
-            // console.log(`getPossibleValuesByIndex(${index}) -> entry: ${entry.getDebug()} -> [${ret}]`);
-            resolve(ret);
-        });
+        const entry: Point = this.indexToPoint(index);
+        const ret: number[] = await this.getPossibleValues(entry);
+        // console.log(`getPossibleValuesByIndex(${index}) -> entry: ${entry.getDebug()} -> [${ret}]`);
+        return ret;
     }
 
     /**
@@ -118,8 +116,8 @@ export default class Board {
      * @returns {Point}
      */
     public indexToPoint(index: number): Point {
-        let x: number = (index) % this.rccSize + 1;
-        let y: number = Math.floor(index / this.rccSize) + 1;
+        const x: number = (index) % this.rccSize + 1;
+        const y: number = Math.floor(index / this.rccSize) + 1;
 
         return new Point(x, y);
     }
@@ -132,10 +130,10 @@ export default class Board {
      * @param entry
      */
     private determineCell(entry: Point): number {
-        let cellsPerRow: number = Math.sqrt(this.rccSize);
-        let cellCol: number = Math.ceil((((entry.x - 1) % this.rccSize) + 1) / cellsPerRow);
-        let cellRow: number = Math.ceil((((entry.y - 1) % this.rccSize) + 1) / cellsPerRow);
-        let cellNum: number = (cellRow - 1) * cellsPerRow + cellCol;
+        const cellsPerRow: number = Math.sqrt(this.rccSize);
+        const cellCol: number = Math.ceil((((entry.x - 1) % this.rccSize) + 1) / cellsPerRow);
+        const cellRow: number = Math.ceil((((entry.y - 1) % this.rccSize) + 1) / cellsPerRow);
+        const cellNum: number = (cellRow - 1) * cellsPerRow + cellCol;
 
         // console.log(`  determineCell(${entry.getDebug()}} -> ${cellCol},${cellRow} = ${cellNum}`);
 
@@ -143,9 +141,9 @@ export default class Board {
     }
 
     private getRCCUnion(row: RCC, col: RCC, cell: RCC): number[] {
-        let rowEntries: number[] = row.usedValues();
-        let colEntries: number[] = col.usedValues();
-        let cellEntries: number[] = cell.usedValues();
+        const rowEntries: number[] = row.usedValues();
+        const colEntries: number[] = col.usedValues();
+        const cellEntries: number[] = cell.usedValues();
 
         // let union: number[] = _.union(rowEntries, colEntries, cellEntries).sort();
 
@@ -171,21 +169,21 @@ export default class Board {
     private buildRCC() {
         // this.boardRCC = new Array();
         for (let col: number = 1; col <= this.rccSize; col++) {
-            let rcc: RCC = new RCC(this.board, new Point(col, 1), new Point(col, this.rccSize));
+            const rcc: RCC = new RCC(this.board, new Point(col, 1), new Point(col, this.rccSize));
             this.boardRCC.push(rcc);
             this.setCol(col, rcc);
         }
         for (let row: number = 1; row <= this.rccSize; row++) {
-            let rcc: RCC = new RCC(this.board, new Point(1, row), new Point(this.rccSize, row));
+            const rcc: RCC = new RCC(this.board, new Point(1, row), new Point(this.rccSize, row));
             this.boardRCC.push(rcc);
             this.setRow(row, rcc);
         }
         for (let cell: number = 1; cell <= this.rccSize; cell++) {
-            let cellCol: number = (cell - 1) % 3 + 1; // 3 of these
-            let cellRow: number = Math.floor((cell - 1) / 3 + 1); // 3 of these
-            let colStart: number = ((cellCol - 1) * 3) + 1; // 9 of these
-            let rowStart: number = ((cellRow - 1) * 3) + 1; // 9 of these
-            let rcc: RCC = new RCC(this.board, new Point(colStart, rowStart), new Point(colStart + 2, rowStart + 2));
+            const cellCol: number = (cell - 1) % 3 + 1; // 3 of these
+            const cellRow: number = Math.floor((cell - 1) / 3 + 1); // 3 of these
+            const colStart: number = ((cellCol - 1) * 3) + 1; // 9 of these
+            const rowStart: number = ((cellRow - 1) * 3) + 1; // 9 of these
+            const rcc: RCC = new RCC(this.board, new Point(colStart, rowStart), new Point(colStart + 2, rowStart + 2));
             this.boardRCC.push(rcc);
             this.setCell(cell, rcc);
         }
@@ -210,12 +208,12 @@ export default class Board {
      */
     public getBoardDebug(): string {
         // let rccSize = Math.sqrt(this.boardSize);
-        let singleSize = Math.sqrt(this.rccSize);   // height and width of each cell
+        const singleSize = Math.sqrt(this.rccSize);   // height and width of each cell
         let out: string = '\n------------\n';
         for (let i = 0; i < this.rccSize; i++) {
             out += '|';
             for (let j = 0; j < this.rccSize; j++) {
-                let index = i * this.rccSize + j;
+                const index = i * this.rccSize + j;
                 out += this._board[index];
                 if ((j + 1) % singleSize === 0) {
                     out += '|';
