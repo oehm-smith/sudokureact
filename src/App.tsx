@@ -1,11 +1,12 @@
+// ABOUTME: Top-level component — owns the game options and lays out header, board and footer.
+// ABOUTME: Options flow down to Sudoku and Footer; Footer reports option changes back here.
+
 import { ChangeEvent, useState } from 'react';
 import './App.css';
 import Footer from './Footer';
 import Sudoku, { SudokuOptions } from './Sudoku';
 
 // logo CC from https://commons.wikimedia.org/wiki/File:Sudoku-by-L2G-20050714.svg
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-// const logo = require('./Sudoku-by-L2G-20050714.svg');
 import logo from './Sudoku-by-L2G-20050714.svg';
 
 /**
@@ -23,20 +24,14 @@ import logo from './Sudoku-by-L2G-20050714.svg';
  * Entries are at Points on the Board / table / matrix - [col,row]
  * - Value - the contents of each Entry ie 1..9
  */
+function App() {
+    const [options, setOptions] = useState<SudokuOptions>({showHints: true});
 
-interface AppState {
-    options: SudokuOptions;
-}
-
-function App(props: AppState)  {
-    const [state, setState] = useState( {options: {showHints: true}});
-
-    const handleOptionsChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const handleOptionsChange = (event: ChangeEvent<HTMLInputElement>) => {
         const name = event.target.name;
-        const value = name === 'showHints' ? event.target.checked : event.target.value;
-        const appStateOptions: AppState = {options: {showHints: value as boolean}};
-
-        setState(appStateOptions);
+        if (name === 'showHints') {
+            setOptions({showHints: event.target.checked});
+        }
     }
 
     return (
@@ -46,11 +41,11 @@ function App(props: AppState)  {
                     <h2>Welcome to Sudoku</h2>
                 </div>
                 <div className="body">
-                    <div className="board"><Sudoku options={state.options}/></div>
+                    <div className="board"><Sudoku options={options}/></div>
                 </div>
                 <div className="footer">
                     <Footer
-                        showHints={state.options.showHints}
+                        showHints={options.showHints}
                         onChange={handleOptionsChange}
                     />
                 </div>
