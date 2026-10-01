@@ -54,6 +54,11 @@ export default class Board {
         return this._staticEntries;
     }
 
+    /** Number of rows, columns and cells on the board - eg. 9 for a standard board. */
+    public get size(): number {
+        return this.rccSize;
+    }
+
     public pushBoard(item: number) {
         this._board.push(item);
     }
