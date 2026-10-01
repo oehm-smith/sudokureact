@@ -1,3 +1,6 @@
+// ABOUTME: RCC - a Row, Column or Cell: one contiguous region of the Sudoku board.
+// ABOUTME: Holds a live reference to the board array so used values stay current as play proceeds.
+
 import Point from './Point';
 export enum RCCType {'row', 'col', 'cell'}
 
@@ -10,14 +13,13 @@ export default class RCC {
     private board: Array<number>;
     private _topLeft: Point;
     private _bottomRight: Point;
-    // values = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // Regardless of if a row, cell or col, this is an array and not a matrix
+    private rowWidth: number;   // Entries per board row, so an (x,y) can be turned into an array index
 
-    constructor(board: number[], topLeft: Point, bottomRight: Point) {
+    constructor(board: number[], topLeft: Point, bottomRight: Point, rowWidth: number) {
         this.board = board;
         this._topLeft = topLeft;
         this._bottomRight = bottomRight;
-        // console.log(`  RCC - topLeft: ${JSON.stringify(this.topLeft)},`
-        //     + `bottomRight: ${JSON.stringify(this.bottomRight)}, board at that pos: TODO`);
+        this.rowWidth = rowWidth;
     }
 
     public get topLeft(): Point {
@@ -34,30 +36,26 @@ export default class RCC {
      * @param col
      */
     isIn(row: number, col: number): boolean {
-        const isIn: boolean = (row >= this._topLeft.y && row <= this._bottomRight.y
-        && col >= this._topLeft.x && col <= this._bottomRight.x);
-
-        return isIn;
+        return (row >= this._topLeft.y && row <= this._bottomRight.y
+            && col >= this._topLeft.x && col <= this._bottomRight.x);
     }
 
     /**
      * Return the values used in this row.  But never 0, which is a 'blank'
      */
     public usedValues(): number[] {
-        let usedValues: number[] = [];
+        const usedValues: number[] = [];
         for (let row: number = this._topLeft.y - 1; row < this._bottomRight.y; row++) {
             for (let col: number = this._topLeft.x - 1; col < this._bottomRight.x; col++) {
-                // TODO - 9!
-                const index = row * 9 + col;
+                const index = row * this.rowWidth + col;
                 const val: number = this.board[index];
                 if (val !== 0) {
                     usedValues.push(val);
                 }
             }
         }
-        usedValues = usedValues.sort();
-
-        return usedValues;
+        // Numeric comparator: the default sort is lexicographic, which misorders values above 9.
+        return usedValues.sort((a, b) => a - b);
     }
 
     public getRCCDebug(printBoardAt: boolean = false): string {

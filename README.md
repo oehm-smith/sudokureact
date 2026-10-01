@@ -13,8 +13,21 @@ git clone https://github.com/oehm-smith/sudokureact
 cd sudokureact
 npm i
 npm run dev
-# Open http://localhost:5174/ (but see the console incase this changes)
+# Open http://localhost:5173/ (but see the console incase this changes)
 ```
+
+Other commands:
+
+```shell
+npm run build     # tsc typecheck, then vite build into dist/
+npm run lint      # eslint over ts and tsx
+npm test          # jest, in jsdom
+```
+
+Further documentation:
+
+- [docs/USER-GUIDE.md](docs/USER-GUIDE.md) - playing the game and what Show Hints does
+- [docs/DEVELOPER-GUIDE.md](docs/DEVELOPER-GUIDE.md) - the board model, the React layer and the tests
 
 ---
 
