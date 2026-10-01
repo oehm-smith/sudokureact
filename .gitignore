@@ -24,3 +24,6 @@ package-lock.json
 .idea/
 sudokuts.iml
 
+
+# build output
+/dist
