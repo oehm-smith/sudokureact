@@ -37,9 +37,6 @@ export default class RCC {
         let isIn: boolean = (row >= this._topLeft.y && row <= this._bottomRight.y
         && col >= this._topLeft.x && col <= this._bottomRight.x);
 
-        let tl: string = JSON.stringify(this._topLeft);
-        let br: string = JSON.stringify(this._bottomRight);
-        console.log(`RCC isIn - row: ${row}, col: ${col}, TL: ${tl}, BR: ${br}- ${isIn}`);
         return isIn;
     }
 
@@ -61,16 +58,6 @@ export default class RCC {
         usedValues = usedValues.sort();
 
         return usedValues;
-    }
-
-    /**
-     * Return the unused values in this RCC
-     *
-     * @param row
-     * @param col
-     */
-    public availableValues(row: number, col: number): Array<number | null> {
-        return [null];
     }
 
     public getRCCDebug(printBoardAt: boolean = false): string {

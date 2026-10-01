@@ -20,6 +20,25 @@ export interface SelectorProps {
 export default function Selector(props: SelectorProps) {
     const [state, setState] = useState({optionValues: new Array<number>()});
 
+    /**
+     * Return a (Promise to the) array of possible values at the given cell.
+     * @param newProps optional that comes from new property values that happens when the input properties change.  Ie.
+     * When the 'showHints' button is changed.
+     * @returns {Promise<number[]>}
+     */
+    const buildPossibleValues = (newProps?: SelectorProps): Promise<number[]> => {
+        let propsToUse: SelectorProps = newProps ? newProps : props;
+        return new Promise<number[]>(async (resolve) => {
+            if (propsToUse.options.showHints) {
+                const values = await propsToUse.board.getPossibleValuesByIndex(propsToUse.index);
+                resolve([0].concat(values));
+            } else {
+                const values = arrayRange(0, 9);
+                resolve(values);
+            }
+        });
+    };
+
     useEffect(() => {
         const doIt = async () => {
             const possibleValues: number[] = await buildPossibleValues();
@@ -61,25 +80,6 @@ export default function Selector(props: SelectorProps) {
                                       makeOption(item, optionsIndex, props.index))}
             </select>);
     }
-
-    /**
-     * Return a (Promise to the) array of possible values at the given cell.
-     * @param newProps optional that comes from new property values that happens when the input properties change.  Ie.
-     * When the 'showHints' button is changed.
-     * @returns {Promise<number[]>}
-     */
-    const buildPossibleValues = (newProps?: SelectorProps): Promise<number[]> => {
-        let propsToUse: SelectorProps = newProps ? newProps : props;
-        return new Promise<number[]>(async (resolve) => {
-            if (propsToUse.options.showHints) {
-                const values = await propsToUse.board.getPossibleValuesByIndex(propsToUse.index);
-                resolve([0].concat(values));
-            } else {
-                const values = arrayRange(0, 9);
-                resolve(values);
-            }
-        });
-    };
 
     // private setStateAsync(state: SelectorState) {
     //     return new Promise((resolve) => {

@@ -71,8 +71,6 @@ export default class Board {
             this.pushBoard(item);
             this.setStaticEntry(index, item > 0);
         });
-
-        console.log(`Board / load - size: ${this.boardSize} - board: ${this.getBoardDebug()}`);
     }
 
     /**
@@ -205,7 +203,12 @@ export default class Board {
         this.cells[cell] = rcc;
     }
 
-    private getBoardDebug(): string {
+    /**
+     * Render the board as text, for debugging.
+     *
+     * @returns the board drawn as rows of values with the cell boundaries marked
+     */
+    public getBoardDebug(): string {
         // let rccSize = Math.sqrt(this.boardSize);
         let singleSize = Math.sqrt(this.rccSize);   // height and width of each cell
         let out: string = '\n------------\n';
