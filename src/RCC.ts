@@ -34,7 +34,7 @@ export default class RCC {
      * @param col
      */
     isIn(row: number, col: number): boolean {
-        let isIn: boolean = (row >= this._topLeft.y && row <= this._bottomRight.y
+        const isIn: boolean = (row >= this._topLeft.y && row <= this._bottomRight.y
         && col >= this._topLeft.x && col <= this._bottomRight.x);
 
         return isIn;
@@ -44,12 +44,12 @@ export default class RCC {
      * Return the values used in this row.  But never 0, which is a 'blank'
      */
     public usedValues(): number[] {
-        let usedValues: number[] = new Array();
+        let usedValues: number[] = [];
         for (let row: number = this._topLeft.y - 1; row < this._bottomRight.y; row++) {
             for (let col: number = this._topLeft.x - 1; col < this._bottomRight.x; col++) {
                 // TODO - 9!
-                let index = row * 9 + col;
-                let val: number = this.board[index];
+                const index = row * 9 + col;
+                const val: number = this.board[index];
                 if (val !== 0) {
                     usedValues.push(val);
                 }
