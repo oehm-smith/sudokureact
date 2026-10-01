@@ -27,9 +27,7 @@ export default class Sudoku extends React.Component<SodukuProps, SodukuState> {
     }
 
     render(): JSX.Element {
-        console.time('sudoku render time');
         let rows: JSX.Element = this.getRows();
-        console.timeEnd('sudoku render time');
         return (
             <div>
                 <form>
@@ -76,7 +74,7 @@ export default class Sudoku extends React.Component<SodukuProps, SodukuState> {
         return classes;
     }
 
-    private getCells(row: number): {} {
+    private getCells(row: number): (JSX.Element | string)[] {
         let indexInRowStart: number = (row - 1) * 9 + 1;
         let indexInRowEnd: number = indexInRowStart + 8;
         // console.log('getCells - indexInRowStart: ' + indexInRowStart + ', indexInRowEnd: ' + indexInRowEnd);

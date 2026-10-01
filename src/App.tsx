@@ -24,19 +24,13 @@ import logo from './Sudoku-by-L2G-20050714.svg';
  * - Value - the contents of each Entry ie 1..9
  */
 
-interface AppState {
-    options: SudokuOptions;
-}
-
-function App(props: AppState)  {
-    const [state, setState] = useState( {options: {showHints: true}});
+function App()  {
+    const [state, setState] = useState<{options: SudokuOptions}>( {options: {showHints: true}});
 
     const handleOptionsChange = async (event: ChangeEvent<HTMLInputElement>) => {
         const name = event.target.name;
         const value = name === 'showHints' ? event.target.checked : event.target.value;
-        const appStateOptions: AppState = {options: {showHints: value as boolean}};
-
-        setState(appStateOptions);
+        setState({options: {showHints: value as boolean}});
     }
 
     return (

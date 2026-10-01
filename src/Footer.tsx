@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { ChangeEvent } from 'react';
 
 export interface OptionsProp {
@@ -9,8 +8,8 @@ export interface OptionsProp {
 /**
  * The Footer hold the options
  */
-async function Footer(props) {
-    const handleValueChange = async (event: ChangeEvent<HTMLInputElement>) => {
+export default function Footer(props: OptionsProp) {
+    const handleValueChange = (event: ChangeEvent<HTMLInputElement>) => {
         props.onChange(event);
     };
     return (
