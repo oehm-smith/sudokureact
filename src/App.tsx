@@ -1,10 +1,12 @@
+// ABOUTME: Top-level component — owns the game options and lays out header, board and footer.
+// ABOUTME: Options flow down to Sudoku and Footer; Footer reports option changes back here.
+
 import { ChangeEvent, useState } from 'react';
 import './App.css';
 import Footer from './Footer';
 import Sudoku, { SudokuOptions } from './Sudoku';
 
 // logo CC from https://commons.wikimedia.org/wiki/File:Sudoku-by-L2G-20050714.svg
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 // const logo = require('./Sudoku-by-L2G-20050714.svg');
 import logo from './Sudoku-by-L2G-20050714.svg';
 

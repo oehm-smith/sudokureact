@@ -1,8 +1,11 @@
+// ABOUTME: The footer below the board — the Show Hints option and a link to the source.
+// ABOUTME: Options are owned by App; this component only reports changes upwards.
+
 import { ChangeEvent } from 'react';
 
 export interface OptionsProp {
     showHints: boolean;
-    onChange: Function;     // Function to inform the parent of changes
+    onChange: (event: ChangeEvent<HTMLInputElement>) => void;   // Inform the parent of changes
 }
 
 /**
