@@ -126,6 +126,15 @@ describe('Sudoku', () => {
         await waitFor(() => expect(offered(container, 1)).toEqual(['0', '2', '4', '7']));
     });
 
+    it('marks the three-by-three boundaries for the stylesheet', async () => {
+        const {container} = render(<Sudoku options={{showHints: true}}/>);
+        await waitForHints(container, 0);
+
+        expect(square(container, 2)).toHaveClass('cellWall');
+        expect(square(container, 20)).toHaveClass('cellFooter', 'cellWall');
+        expect(square(container, 0)).not.toHaveClass('cellWall');
+    });
+
     it('renders no empty option when a square has no legal value left', async () => {
         const {container} = render(<Sudoku options={{showHints: true}}/>);
 
