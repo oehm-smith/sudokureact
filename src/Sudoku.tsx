@@ -3,6 +3,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import './App.css';
+import './Sudoku.css';
 import Selector from './Selector';
 import Board from './Board';
 import { assertDimensions, buildClasses, optionValuesFor } from './grid';
@@ -85,7 +86,7 @@ export default function Sudoku(props: SudokuProps) {
     return (
         <div>
             <form>
-                <table>
+                <table className="sudokuBoard">
                     <tbody>{rows}</tbody>
                 </table>
             </form>
